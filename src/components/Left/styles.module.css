@@ -1,0 +1,33 @@
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+  user-select: none;
+  position: relative;
+  cursor: pointer;
+  border-bottom: 1px solid #b0bec5;
+}
+
+.item:hover {
+  background-color: #eeeeaa;
+}
+
+.label {
+  text-align: center;
+}
+
+.icon {
+  font-size: 22px;
+}
+
+.item input[type='file'] {
+  position: absolute;
+  height: 100%;
+  cursor: pointer;
+  width: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
