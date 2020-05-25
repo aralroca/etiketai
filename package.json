@@ -19,7 +19,6 @@
     "preact-render-to-string": "5.1.8",
     "react": "github:preact-compat/react#1.0.0",
     "react-dom": "github:preact-compat/react-dom#1.0.0",
-    "react-konva": "^16.13.0-3",
     "react-ssr-prepass": "npm:preact-ssr-prepass@1.0.1"
   },
   "devDependencies": {

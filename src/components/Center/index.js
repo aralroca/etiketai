@@ -8,6 +8,10 @@ const svg = isNode
 const xform = isNode ? undefined : svg.createSVGMatrix()
 const svgPoint = isNode ? undefined : svg.createSVGPoint()
 
+let startX
+let startY
+let isDown
+
 function transformedPoint(x, y) {
   svgPoint.x = x
   svgPoint.y = y
@@ -89,6 +93,40 @@ export default function Center() {
     return e.preventDefault() && false
   }
 
+  function onMouseDown(e) {
+    const { left, top } = ref.current.getBoundingClientRect()
+
+    startX = parseInt(e.clientX - left, 10)
+    startY = parseInt(e.clientY - top, 10)
+    isDown = true
+  }
+
+  function onMouseMove(e) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (!isDown) return
+
+    const { left, top } = ref.current.getBoundingClientRect()
+    const ctx = ctxRef.current
+    const mouseX = parseInt(e.clientX - left)
+    const mouseY = parseInt(e.clientY - top)
+
+    ctx.beginPath()
+    ctx.clearRect(0, 0, ref.current.width, ref.current.height)
+    redraw()
+    ctx.strokeStyle = 'green'
+    ctx.lineWidth = 5
+    ctx.strokeRect(startX, startY, mouseX - startX, mouseY - startY)
+  }
+
+  function stopDragging(e) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    isDown = false
+  }
+
   if (!file) return null
 
   return (
@@ -96,6 +134,10 @@ export default function Center() {
       width={size.width}
       height={size.height}
       onMouseWheel={onZoom}
+      onMouseDown={onMouseDown}
+      onMouseOut={stopDragging}
+      onMouseUp={stopDragging}
+      onMouseMove={onMouseMove}
       ref={ref}
     />
   )
