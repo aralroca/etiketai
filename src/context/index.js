@@ -1,13 +1,13 @@
-import { createContext, useContext, useReducer } from 'react'
+import { createContext, useContext, useReducer, useEffect } from 'react'
 
 const Ctx = createContext({})
 
-const initialState = { files: [] }
+const initialState = { files: [], saved: false }
 
 function reducer(state, action) {
   switch (action.type) {
     case 'load':
-      return { ...state, files: [...action.data, ...state.files], fileIndex: 0 }
+      return { ...state, saved: false, files: [...action.data, ...state.files], fileIndex: 0 }
     case 'next':
       return {
         ...state,
@@ -28,6 +28,20 @@ function reducer(state, action) {
 
 export function DashboardProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState)
+
+  useEffect(() => {
+    if(state.files.length === 0 || state.saved) return
+
+    function beforeunload(e) {
+      const confirmationMessage = 'Changes that you made may not be saved.'
+      e.returnValue = confirmationMessage;
+      return confirmationMessage;
+    }
+
+    window.addEventListener("beforeunload", beforeunload);
+
+    return () => window.removeEventListener("beforeunload", beforeunload);
+  }, [state.files, state.saved])
 
   return <Ctx.Provider value={{ state, dispatch }}>{children}</Ctx.Provider>
 }
