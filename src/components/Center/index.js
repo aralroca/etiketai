@@ -26,13 +26,13 @@ export default function Center() {
     const img = imgRef.current
     const canvas = ref.current
     const ctx = ctxRef.current
-    const ratio = img.width / img.height;
+    const ratio = img.width / img.height
     let width = canvas.width
-    let height = width / ratio;
+    let height = width / ratio
 
     if (height > canvas.height) {
-      height = canvas.height;
-      width = height * ratio;
+      height = canvas.height
+      width = height * ratio
     }
 
     // Clear canvas
@@ -46,7 +46,7 @@ export default function Center() {
   }
 
   useEffect(() => {
-    if(!imgRef.current) return
+    if (!imgRef.current) return
     redraw()
   }, [size.width])
 
@@ -55,7 +55,8 @@ export default function Center() {
 
     const handler = () => {
       setSize({
-        width: window.innerWidth - 420, height: window.innerHeight
+        width: window.innerWidth - 420,
+        height: window.innerHeight,
       })
       redraw()
     }
@@ -78,8 +79,11 @@ export default function Center() {
     if (delta) {
       const canvas = ref.current
       const ctx = canvas.getContext('2d')
+      const pt = transformedPoint(canvas.width / 2, canvas.height / 2)
+      ctx.translate(pt.x, pt.y)
       const factor = Math.pow(1.1, delta)
       ctx.scale(factor, factor)
+      ctx.translate(-pt.x, -pt.y)
       redraw()
     }
     return e.preventDefault() && false
@@ -89,10 +93,10 @@ export default function Center() {
 
   return (
     <canvas
-       width={size.width}
-       height={size.height}
-       onMouseWheel={onZoom} 
-       ref={ref} 
+      width={size.width}
+      height={size.height}
+      onMouseWheel={onZoom}
+      ref={ref}
     />
   )
 }
