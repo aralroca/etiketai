@@ -2,10 +2,14 @@ import { createContext, useContext, useReducer, useEffect, useRef } from 'react'
 
 const Ctx = createContext({})
 
-const initialState = { files: [], saved: false, size: {} }
+const initialState = { files: [], saved: false, size: {}, zoom: 0 }
 
 function reducer(state, action) {
   switch (action.type) {
+    case 'reset-zoom':
+      return { ...state, zoom: initialState.zoom }
+    case 'set-zoom':
+      return { ...state, zoom: state.zoom + action.data }
     case 'set-size':
       return { ...state, size: action.data }
     case 'load':
@@ -37,11 +41,11 @@ export function DashboardProvider({ children }) {
   const canvasRef = useRef()
   const ctxRef = useRef()
   const imgRef = useRef()
-  const zoom = useRef(1)
   const [state, dispatch] = useReducer(reducer, initialState)
 
   useEffect(() => {
     if (state.files.length === 0 || state.saved) return
+    if (process.env.NODE_ENV !== 'production') return
 
     function beforeunload(e) {
       const confirmationMessage = 'Changes that you made may not be saved.'
@@ -55,7 +59,7 @@ export function DashboardProvider({ children }) {
   }, [state.files, state.saved])
 
   return (
-    <Ctx.Provider value={{ state, dispatch, canvasRef, ctxRef, zoom, imgRef }}>
+    <Ctx.Provider value={{ state, dispatch, canvasRef, ctxRef, imgRef }}>
       {children}
     </Ctx.Provider>
   )

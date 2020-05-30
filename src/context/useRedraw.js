@@ -40,6 +40,7 @@ export function useRedrawOnChangeFile() {
     if (!file) return
 
     const handler = () => {
+      dispatch({ type: 'reset-zoom' })
       dispatch({
         type: 'set-size',
         data: {

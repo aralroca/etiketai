@@ -1,8 +1,8 @@
-import { useDashboard } from '.'
 import useRedraw from './useRedraw'
+import { useDashboard } from '.'
 
-const MAX_ZOOM = 15
 const isNode = typeof window === 'undefined'
+const MAX_ZOOM = 15
 
 const svg = isNode
   ? undefined
@@ -18,12 +18,15 @@ function transformedPoint(x, y) {
 }
 
 export default function useZoom() {
-  const { canvasRef, zoom } = useDashboard()
+  const { state, canvasRef, dispatch } = useDashboard()
   const redraw = useRedraw()
 
   function onZoom(delta) {
-    if (zoom.current >= MAX_ZOOM && delta > 0) return
-    if (zoom.current <= -MAX_ZOOM && delta < 0) return
+    const { zoom } = state
+
+    if (!canvasRef.current) return
+    if (zoom >= MAX_ZOOM && delta > 0) return
+    if (zoom <= -MAX_ZOOM && delta < 0) return
 
     if (delta) {
       const canvas = canvasRef.current
@@ -31,10 +34,10 @@ export default function useZoom() {
       const pt = transformedPoint(canvas.width / 2, canvas.height / 2)
       ctx.translate(pt.x, pt.y)
       const factor = Math.pow(1.1, delta)
-      zoom.current += delta
       ctx.scale(factor, factor)
       ctx.translate(-pt.x, -pt.y)
       redraw()
+      dispatch({ type: 'set-zoom', data: delta })
     }
   }
 
