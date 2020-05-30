@@ -1,13 +1,20 @@
-import { createContext, useContext, useReducer, useEffect } from 'react'
+import { createContext, useContext, useReducer, useEffect, useRef } from 'react'
 
 const Ctx = createContext({})
 
-const initialState = { files: [], saved: false }
+const initialState = { files: [], saved: false, size: {} }
 
 function reducer(state, action) {
   switch (action.type) {
+    case 'set-size':
+      return { ...state, size: action.data }
     case 'load':
-      return { ...state, saved: false, files: [...action.data, ...state.files], fileIndex: 0 }
+      return {
+        ...state,
+        saved: false,
+        files: [...action.data, ...state.files],
+        fileIndex: 0,
+      }
     case 'next':
       return {
         ...state,
@@ -27,23 +34,31 @@ function reducer(state, action) {
 }
 
 export function DashboardProvider({ children }) {
+  const canvasRef = useRef()
+  const ctxRef = useRef()
+  const imgRef = useRef()
+  const zoom = useRef(1)
   const [state, dispatch] = useReducer(reducer, initialState)
 
   useEffect(() => {
-    if(state.files.length === 0 || state.saved) return
+    if (state.files.length === 0 || state.saved) return
 
     function beforeunload(e) {
       const confirmationMessage = 'Changes that you made may not be saved.'
-      e.returnValue = confirmationMessage;
-      return confirmationMessage;
+      e.returnValue = confirmationMessage
+      return confirmationMessage
     }
 
-    window.addEventListener("beforeunload", beforeunload);
+    window.addEventListener('beforeunload', beforeunload)
 
-    return () => window.removeEventListener("beforeunload", beforeunload);
+    return () => window.removeEventListener('beforeunload', beforeunload)
   }, [state.files, state.saved])
 
-  return <Ctx.Provider value={{ state, dispatch }}>{children}</Ctx.Provider>
+  return (
+    <Ctx.Provider value={{ state, dispatch, canvasRef, ctxRef, zoom, imgRef }}>
+      {children}
+    </Ctx.Provider>
+  )
 }
 
 export function useDashboard() {
