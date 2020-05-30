@@ -101,6 +101,14 @@ export default function Center() {
     isDown = true
   }
 
+  function arc(ctx, x, y) {
+    ctx.beginPath()
+    ctx.fillStyle = '#aed581'
+    ctx.arc(x, y, 5, 0, 2 * Math.PI)
+    ctx.closePath()
+    ctx.fill()
+  }
+
   function onMouseMove(e) {
     e.preventDefault()
     e.stopPropagation()
@@ -115,9 +123,13 @@ export default function Center() {
     ctx.beginPath()
     ctx.clearRect(0, 0, ref.current.width, ref.current.height)
     redraw()
-    ctx.strokeStyle = 'green'
-    ctx.lineWidth = 5
-    ctx.strokeRect(startX, startY, mouseX - startX, mouseY - startY)
+    ctx.fillStyle = '#aed58144'
+    ctx.lineWidth = 2
+    ctx.fillRect(startX, startY, mouseX - startX, mouseY - startY)
+    arc(ctx, startX, startY)
+    arc(ctx, startX + (mouseX - startX), startY)
+    arc(ctx, startX, startY + (mouseY - startY))
+    arc(ctx, mouseX, mouseY)
   }
 
   function stopDragging(e) {
