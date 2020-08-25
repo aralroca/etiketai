@@ -8,9 +8,10 @@ import { useDashboard } from '../../context'
 let startX
 let startY
 let isDown
+let newBox
 
 export default function Center() {
-  const { state, canvasRef, ctxRef } = useDashboard()
+  const { state, canvasRef, ctxRef, dispatch } = useDashboard()
   const onZoom = useZoom()
   const redraw = useRedraw()
   const file = state.files[state.fileIndex]
@@ -30,14 +31,7 @@ export default function Center() {
     startX = parseInt(e.clientX - left, 10)
     startY = parseInt(e.clientY - top, 10)
     isDown = true
-  }
-
-  function arc(ctx, x, y) {
-    ctx.beginPath()
-    ctx.fillStyle = '#aed581'
-    ctx.arc(x, y, 5, 0, 2 * Math.PI)
-    ctx.closePath()
-    ctx.fill()
+    newBox = true
   }
 
   function onMouseMove(e) {
@@ -47,20 +41,13 @@ export default function Center() {
     if (!isDown) return
 
     const { left, top } = canvasRef.current.getBoundingClientRect()
-    const ctx = ctxRef.current
     const mouseX = parseInt(e.clientX - left)
     const mouseY = parseInt(e.clientY - top)
+    const data = [startX, startY, mouseX, mouseY]
 
-    ctx.beginPath()
-    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
-    redraw()
-    ctx.fillStyle = '#aed58144'
-    ctx.lineWidth = 2
-    ctx.fillRect(startX, startY, mouseX - startX, mouseY - startY)
-    arc(ctx, startX, startY)
-    arc(ctx, startX + (mouseX - startX), startY)
-    arc(ctx, startX, startY + (mouseY - startY))
-    arc(ctx, mouseX, mouseY)
+    if (newBox) dispatch({ type: 'add-box', data })
+    else dispatch({ type: 'edit-last-box', data })
+    newBox = false
   }
 
   function stopDragging(e) {
