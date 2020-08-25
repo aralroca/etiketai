@@ -1,8 +1,16 @@
 import { useDashboard } from '.'
 import { useEffect } from 'react'
 
+function arc(ctx, x, y) {
+  ctx.beginPath()
+  ctx.fillStyle = '#aed581'
+  ctx.arc(x, y, 5, 0, 2 * Math.PI)
+  ctx.closePath()
+  ctx.fill()
+}
+
 export default function useRedraw() {
-  const { imgRef, canvasRef, ctxRef } = useDashboard()
+  const { state, imgRef, canvasRef, ctxRef } = useDashboard()
 
   function redraw() {
     const img = imgRef.current
@@ -26,6 +34,19 @@ export default function useRedraw() {
     // Draw
     ctx.drawImage(img, 0, 0, width, height)
     URL.revokeObjectURL(img.src)
+
+    // Boxes
+    if (!state.boxes) return
+    state.boxes.forEach(([startX, startY, mouseX, mouseY]) => {
+      ctx.beginPath()
+      ctx.fillStyle = '#aed58144'
+      ctx.lineWidth = 2
+      ctx.fillRect(startX, startY, mouseX - startX, mouseY - startY)
+      arc(ctx, startX, startY)
+      arc(ctx, startX + (mouseX - startX), startY)
+      arc(ctx, startX, startY + (mouseY - startY))
+      arc(ctx, mouseX, mouseY)
+    })
   }
 
   return redraw
@@ -63,6 +84,11 @@ export function useRedrawOnChangeFile() {
 
     return () => window.removeEventListener('resize', handler)
   }, [file])
+
+  useEffect(() => {
+    if (!file || !state.boxes || state.boxes.length === 0) return
+    redraw()
+  }, [file, state.boxes])
 }
 
 export function useRedrawOnResize() {
