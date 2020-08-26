@@ -1,7 +1,8 @@
-import useRedraw, {
+import {
   useRedrawOnChangeFile,
   useRedrawOnResize,
 } from '../../context/useRedraw'
+import useKeyDownControls from '../../context/useKeyDownControls'
 import useZoom from '../../context/useZoom'
 import { useDashboard } from '../../context'
 
@@ -11,13 +12,13 @@ let isDown
 let newBox
 
 export default function Center() {
-  const { state, canvasRef, ctxRef, dispatch } = useDashboard()
+  const { state, canvasRef, dispatch } = useDashboard()
   const onZoom = useZoom()
-  const redraw = useRedraw()
   const file = state.files[state.fileIndex]
 
   useRedrawOnChangeFile()
   useRedrawOnResize()
+  useKeyDownControls()
 
   function onMouseWheel(e) {
     e.preventDefault()

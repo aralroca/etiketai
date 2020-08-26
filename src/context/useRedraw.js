@@ -3,7 +3,6 @@ import { useEffect } from 'react'
 
 function arc(ctx, x, y) {
   ctx.beginPath()
-  ctx.fillStyle = '#aed581'
   ctx.arc(x, y, 5, 0, 2 * Math.PI)
   ctx.closePath()
   ctx.fill()
@@ -37,11 +36,13 @@ export default function useRedraw() {
 
     // Boxes
     if (!state.boxes) return
-    state.boxes.forEach(([startX, startY, mouseX, mouseY]) => {
+    state.boxes.forEach(([startX, startY, mouseX, mouseY], index) => {
+      const color = index === state.selectedBox ? '#64b5f6' : '#aed581'
       ctx.beginPath()
-      ctx.fillStyle = '#aed58144'
+      ctx.fillStyle = color + '44' //opacity
       ctx.lineWidth = 2
       ctx.fillRect(startX, startY, mouseX - startX, mouseY - startY)
+      ctx.fillStyle = color
       arc(ctx, startX, startY)
       arc(ctx, startX + (mouseX - startX), startY)
       arc(ctx, startX, startY + (mouseY - startY))
