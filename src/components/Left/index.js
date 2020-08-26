@@ -85,6 +85,7 @@ export default function Left() {
     {
       label: 'Delete RectBox',
       icon: '❌',
+      action: () => dispatch({ type: 'remove-box' }),
     },
     {
       label: 'Zoom in',

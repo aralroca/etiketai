@@ -6,16 +6,28 @@ const initialState = { files: [], saved: false, size: {}, zoom: 0 }
 
 function reducer(state, action) {
   switch (action.type) {
-    case 'add-box':
-      return { ...state, boxes: [...(state.boxes || []), action.data] }
+    case 'add-box': {
+      const boxes = state.boxes || []
+      return {
+        ...state,
+        selectedBox: boxes.length,
+        boxes: [...boxes, action.data]
+      }
+    }
     case 'edit-last-box':
       return {
         ...state,
+        selectedBox: state.boxes.length - 1,
         boxes: [
           ...state.boxes.filter((_, i) => i < state.boxes.length - 1),
           action.data,
         ],
       }
+    case 'remove-box': return {
+      ...state,
+      selectedBox: -1,
+      boxes: (state.boxes || []).filter((_, i) => i != state.selectedBox)
+    }
     case 'reset-zoom':
       return { ...state, zoom: initialState.zoom }
     case 'set-zoom':
