@@ -25,9 +25,11 @@ function reducer(state, action) {
       }
     case 'remove-box': return {
       ...state,
-      selectedBox: -1,
+      selectedBox: undefined,
       boxes: (state.boxes || []).filter((_, i) => i != state.selectedBox)
     }
+    case 'select-box':
+      return { ...state, selectedBox: action.data }
     case 'reset-zoom':
       return { ...state, zoom: initialState.zoom }
     case 'set-zoom':

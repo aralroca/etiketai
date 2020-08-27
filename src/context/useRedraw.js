@@ -1,5 +1,5 @@
+import { useEffect, useRef } from 'react'
 import { useDashboard } from '.'
-import { useEffect } from 'react'
 
 function arc(ctx, x, y) {
   ctx.beginPath()
@@ -100,4 +100,42 @@ export function useRedrawOnResize() {
     if (!imgRef.current) return
     redraw()
   }, [state.size.width])
+}
+
+export function useSelectBoxOnClick() {
+  const { state, dispatch, canvasRef } = useDashboard()
+  const redraw = useRedraw()
+  const needsRedraw = useRef(false)
+
+  function onClick(e) {
+    const { left, top } = canvasRef.current.getBoundingClientRect()
+    const x = e.clientX - left
+    const y = e.clientY - top
+    const boxes = state.boxes || []
+    let selected
+
+    boxes.forEach(([startX, startY, mouseX, mouseY], index) => {
+      if (
+        Math.min(startX, mouseX, x) !== x &&
+        Math.max(startX, mouseX, x) !== x &&
+        Math.min(startY, mouseY, y) !== y &&
+        Math.max(startY, mouseY, y) !== y
+      ) {
+        selected = index
+      }
+    })
+
+    if (selected !== undefined) {
+      needsRedraw.current = true
+      dispatch({ type: 'select-box', data: selected })
+    }
+  }
+
+  useEffect(() => {
+    if (!needsRedraw.current) return
+    redraw()
+    needsRedraw.current = false
+  })
+
+  return onClick
 }
