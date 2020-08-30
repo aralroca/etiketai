@@ -2,7 +2,13 @@ import { createContext, useContext, useReducer, useEffect, useRef } from 'react'
 
 const Ctx = createContext({})
 
-const initialState = { files: [], saved: false, size: {}, zoom: 0 }
+const initialState = {
+  files: [],
+  saved: false,
+  size: {},
+  zoom: 0,
+  boxNames: {},
+}
 
 function reducer(state, action) {
   switch (action.type) {
@@ -11,7 +17,7 @@ function reducer(state, action) {
       return {
         ...state,
         selectedBox: boxes.length,
-        boxes: [...boxes, action.data]
+        boxes: [...boxes, action.data],
       }
     }
     case 'edit-last-box':
@@ -23,13 +29,19 @@ function reducer(state, action) {
           action.data,
         ],
       }
-    case 'remove-box': return {
-      ...state,
-      selectedBox: undefined,
-      boxes: (state.boxes || []).filter((_, i) => i != state.selectedBox)
-    }
+    case 'remove-box':
+      return {
+        ...state,
+        selectedBox: undefined,
+        boxes: (state.boxes || []).filter((_, i) => i != state.selectedBox),
+      }
     case 'select-box':
       return { ...state, selectedBox: action.data }
+    case 'rename-label':
+      return {
+        ...state,
+        boxNames: { ...state.boxNames, [state.selectedBox + '']: action.data },
+      }
     case 'reset-zoom':
       return { ...state, zoom: initialState.zoom }
     case 'set-zoom':

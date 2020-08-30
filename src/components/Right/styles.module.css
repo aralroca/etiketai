@@ -10,7 +10,9 @@
   margin-top: 0;
 }
 
-.content, .title, .box {
+.content,
+.title,
+.box {
   padding: 10px;
 }
 
@@ -20,7 +22,11 @@
 }
 
 .box {
+  display: block;
   cursor: pointer;
+  border: none;
+  background: transparent;
+  width: calc(100% - 20px);
 }
 
 .box.active {

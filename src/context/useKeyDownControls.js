@@ -1,6 +1,14 @@
-import { useEffect, useRef } from "react"
-import { useDashboard } from "."
-import useRedraw from "./useRedraw"
+import { useEffect, useRef } from 'react'
+import { useDashboard } from '.'
+import useRedraw from './useRedraw'
+
+function isRenamingLabel() {
+  return (
+    document.activeElement.tagName === 'INPUT' &&
+    document.activeElement.className.includes('box') &&
+    document.activeElement.value
+  )
+}
 
 export default function useKeyDownControls() {
   const { state, dispatch } = useDashboard()
@@ -11,6 +19,7 @@ export default function useKeyDownControls() {
     const keys = new Set(['Escape', 'Backspace'])
     function onKeyDown(e) {
       if (!keys.has(e.key)) return
+      if (isRenamingLabel()) return
       needsRedraw.current = true
       dispatch({ type: 'remove-box' })
     }
