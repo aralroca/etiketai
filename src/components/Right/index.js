@@ -23,25 +23,38 @@ export default function Right() {
       <div className={styles.content}>
         {boxes.length === 0 ? (
           <i className={styles.notYet}>No boxes yet.</i>
-        )
-          : boxes.map((box, index) => (
-            <div
-              onClick={() => {
-                dispatch({ type: 'select-box', data: index })
-                needsRedraw.current = true
-              }}
-              className={`${styles.box} ${selectedBox === index ? styles.active : ''}`}
-              key={`${box[0]}-${box[1]}`}
-            >
-              {boxNames[index + ''] || <i>No label yet</i>}
-            </div>
-          ))}
+        ) : (
+          boxes
+            .slice()
+            .reverse()
+            .map((box, index) => {
+              const realIndex = boxes.length - 1 - index
+              const isActive = selectedBox === realIndex
+
+              return (
+                <input
+                  className={`${styles.box} ${isActive ? styles.active : ''}`}
+                  key={`${box[0]}-${box[1]}`}
+                  type="text"
+                  onClick={() => {
+                    if (isActive) return
+                    dispatch({ type: 'select-box', data: realIndex })
+                    needsRedraw.current = true
+                  }}
+                  placeholder="No label yet"
+                  defaultValue={boxNames[index + ''] || ''}
+                  onChange={(e) =>
+                    dispatch({ type: 'rename-label', data: e.value })
+                  }
+                />
+              )
+            })
+        )}
       </div>
       <p className={styles.title}>Files</p>
       <div className={styles.content}>
         <i className={styles.notYet}>@todo</i>
       </div>
-
     </div>
   )
 }
