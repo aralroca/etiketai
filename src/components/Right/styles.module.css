@@ -1,0 +1,34 @@
+.right {
+  overflow-y: auto;
+  max-height: 100vh;
+}
+
+.title {
+  text-align: center;
+  font-weight: bold;
+  background-color: #e0e0e0;
+  margin-top: 0;
+}
+
+.content, .title, .box {
+  padding: 10px;
+}
+
+.content {
+  overflow-y: auto;
+  max-height: calc(50vh - 20px);
+}
+
+.box {
+  cursor: pointer;
+}
+
+.box.active {
+  background-color: #64b5f644;
+}
+
+.notYet {
+  display: block;
+  text-align: center;
+  padding-bottom: 20px;
+}
