@@ -19,7 +19,9 @@ export default function Right() {
 
   return (
     <div className={styles.right}>
-      <p className={styles.title}>Box labels</p>
+      <p className={styles.title}>
+        {state.files?.[state.fileIndex]?.name || 'Box'} labels
+      </p>
       <div className={styles.content}>
         {boxes.length === 0 ? (
           <i className={styles.notYet}>No boxes yet.</i>
@@ -53,7 +55,21 @@ export default function Right() {
       </div>
       <p className={styles.title}>Files</p>
       <div className={styles.content}>
-        <i className={styles.notYet}>@todo</i>
+        {state.files?.length > 0 ? (
+          state.files.map((file, index) => (
+            <div
+              key={index}
+              onClick={() => dispatch({ type: 'change-file', data: index })}
+              className={`${styles.box} ${
+                state.fileIndex === index ? styles.active : ''
+              }`}
+            >
+              {file.name}
+            </div>
+          ))
+        ) : (
+          <i className={styles.notYet}>No files yet.</i>
+        )}
       </div>
     </div>
   )
