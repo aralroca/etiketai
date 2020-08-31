@@ -68,6 +68,11 @@ function reducer(state, action) {
         ...state,
         fileIndex: state.fileIndex > 0 ? state.fileIndex - 1 : state.fileIndex,
       }
+    case 'change-file':
+      return {
+        ...state,
+        fileIndex: action.data,
+      }
     default:
       throw new Error()
   }

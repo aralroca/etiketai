@@ -75,10 +75,6 @@ export default function Left() {
 
   const imageMenuList = [
     {
-      label: 'Create RectBox',
-      icon: '🌠',
-    },
-    {
       label: 'Duplicate RectBox',
       icon: '📑',
     },
