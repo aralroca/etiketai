@@ -20,6 +20,17 @@ function reducer(state, action) {
         boxes: [...boxes, action.data],
       }
     }
+    case 'move-box': {
+      const boxes = (state.boxes || []).slice()
+      const [osx, osy, omx, omy] = boxes[state.selectedBox]
+      const [sx, sy, mx, my] = action.data
+      const x = mx - sx
+      const y = my - sy
+
+      boxes[state.selectedBox] = [osx + x, osy + y, omx + x, omy + y]
+
+      return { ...state, boxes }
+    }
     case 'edit-last-box':
       return {
         ...state,
