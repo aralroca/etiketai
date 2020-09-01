@@ -102,12 +102,12 @@ export function useRedrawOnResize() {
   }, [state.size.width])
 }
 
-export function useSelectBoxOnClick() {
+export function useSelectBox() {
   const { state, dispatch, canvasRef } = useDashboard()
   const redraw = useRedraw()
   const needsRedraw = useRef(false)
 
-  function onClick(e) {
+  function selectBox(e) {
     const { left, top } = canvasRef.current.getBoundingClientRect()
     const x = e.clientX - left
     const y = e.clientY - top
@@ -129,6 +129,8 @@ export function useSelectBoxOnClick() {
       needsRedraw.current = true
       dispatch({ type: 'select-box', data: selected })
     }
+
+    return selected
   }
 
   useEffect(() => {
@@ -137,5 +139,5 @@ export function useSelectBoxOnClick() {
     needsRedraw.current = false
   })
 
-  return onClick
+  return selectBox
 }

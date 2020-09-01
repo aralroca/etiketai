@@ -1,7 +1,7 @@
 import {
   useRedrawOnChangeFile,
   useRedrawOnResize,
-  useSelectBoxOnClick,
+  useSelectBox,
 } from '../../context/useRedraw'
 import useKeyDownControls from '../../context/useKeyDownControls'
 import useZoom from '../../context/useZoom'
@@ -11,12 +11,13 @@ let startX
 let startY
 let isDown
 let newBox
+let movingBox
 
 export default function Center() {
   const { state, canvasRef, dispatch } = useDashboard()
   const onZoom = useZoom()
   const file = state.files[state.fileIndex]
-  const onClick = useSelectBoxOnClick()
+  const selectBox = useSelectBox()
 
   useRedrawOnChangeFile()
   useRedrawOnResize()
@@ -35,6 +36,7 @@ export default function Center() {
     startY = parseInt(e.clientY - top, 10)
     isDown = true
     newBox = true
+    movingBox = selectBox(e)
   }
 
   function onMouseMove(e) {
@@ -44,12 +46,18 @@ export default function Center() {
     if (!isDown) return
 
     const { left, top } = canvasRef.current.getBoundingClientRect()
-    const mouseX = parseInt(e.clientX - left)
-    const mouseY = parseInt(e.clientY - top)
+    const mouseX = parseInt(e.clientX - left, 10)
+    const mouseY = parseInt(e.clientY - top, 10)
     const data = [startX, startY, mouseX, mouseY]
 
     if (startX === mouseX || mouseY === startY) return
-    if (newBox) dispatch({ type: 'add-box', data })
+
+    if (movingBox > -1) {
+      startX = mouseX
+      startY = mouseY
+      dispatch({ type: 'move-box', data })
+    }
+    else if (newBox) dispatch({ type: 'add-box', data })
     else dispatch({ type: 'edit-last-box', data })
     newBox = false
   }
@@ -59,6 +67,7 @@ export default function Center() {
     e.stopPropagation()
 
     isDown = false
+    movingBox = undefined
   }
 
   if (!file) return null
@@ -68,7 +77,6 @@ export default function Center() {
       width={state.size.width}
       height={state.size.height}
       ref={canvasRef}
-      onClick={onClick}
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
       onMouseOut={stopDragging}
