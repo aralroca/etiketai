@@ -14,8 +14,8 @@
     "test:watch": "NODE_ENV=test jest --watch"
   },
   "dependencies": {
-    "next": "9.5.2",
-    "preact": "10.4.7",
+    "next": "9.5.3",
+    "preact": "10.4.8",
     "preact-render-to-string": "5.1.10",
     "react": "github:preact-compat/react#1.0.0",
     "react-dom": "github:preact-compat/react-dom#1.0.0",
@@ -27,7 +27,7 @@
     "babel-preset-minify": "0.5.1",
     "husky": "4.2.5",
     "jest": "26.4.2",
-    "prettier": "2.1.0",
+    "prettier": "2.1.1",
     "pretty-quick": "3.0.0"
   },
   "husky": {

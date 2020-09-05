@@ -47,7 +47,7 @@ function ZoomPercentage() {
 }
 
 export default function Left() {
-  const { dispatch } = useDashboard()
+  const { state, dispatch } = useDashboard()
   const onZoom = useZoom()
 
   const globalList = [
@@ -77,6 +77,12 @@ export default function Left() {
     {
       label: 'Duplicate RectBox',
       icon: '📑',
+      action: () => {
+        if (typeof state.selectedBox !== 'number') {
+          return alert('You should select a RectBox')
+        }
+        dispatch({ type: 'duplicate-box' })
+      },
     },
     {
       label: 'Delete RectBox',
