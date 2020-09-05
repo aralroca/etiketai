@@ -37,14 +37,12 @@ function reducer(state, action) {
 
       return { ...state, boxes }
     }
-    case 'edit-last-box':
+    case 'edit-box':
       return {
         ...state,
-        selectedBox: state.boxes.length - 1,
-        boxes: [
-          ...state.boxes.filter((_, i) => i < state.boxes.length - 1),
-          action.data,
-        ],
+        selectedBox: action.data.index,
+        boxes: state.boxes
+          .map((box, i) => i === action.data.index ? action.data.box : box),
       }
     case 'remove-box':
       return {

@@ -12,6 +12,7 @@ let startY
 let isDown
 let newBox
 let movingBox
+let resizing
 
 export default function Center() {
   const { state, canvasRef, dispatch } = useDashboard()
@@ -31,12 +32,15 @@ export default function Center() {
 
   function onMouseDown(e) {
     const { left, top } = canvasRef.current.getBoundingClientRect()
+    const { selected, oppositeCorner } = selectBox(e)
+    const [x, y] = oppositeCorner || []
 
-    startX = parseInt(e.clientX - left, 10)
-    startY = parseInt(e.clientY - top, 10)
+    startX = x || parseInt(e.clientX - left, 10)
+    startY = y || parseInt(e.clientY - top, 10)
     isDown = true
-    newBox = true
-    movingBox = selectBox(e)
+    newBox = !oppositeCorner
+    movingBox = oppositeCorner ? undefined : selected
+    resizing = oppositeCorner ? selected : undefined
   }
 
   function onMouseMove(e) {
@@ -58,7 +62,8 @@ export default function Center() {
       dispatch({ type: 'move-box', data })
     }
     else if (newBox) dispatch({ type: 'add-box', data })
-    else dispatch({ type: 'edit-last-box', data })
+    else if (resizing > -1) dispatch({ type: 'edit-box', data: { box: data, index: resizing } })
+    else dispatch({ type: 'edit-box', data: { box: data, index: state.boxes.length - 1 } })
     newBox = false
   }
 
@@ -68,6 +73,7 @@ export default function Center() {
 
     isDown = false
     movingBox = undefined
+    resizing = undefined
   }
 
   if (!file) return null
