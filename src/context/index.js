@@ -20,6 +20,12 @@ function reducer(state, action) {
         boxes: [...boxes, action.data],
       }
     }
+    case 'duplicate-box':
+      return {
+        ...state,
+        selectedBox: state.boxes.length,
+        boxes: [...state.boxes, state.boxes[state.selectedBox]],
+      }
     case 'move-box': {
       const boxes = (state.boxes || []).slice()
       const [osx, osy, omx, omy] = boxes[state.selectedBox]
