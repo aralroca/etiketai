@@ -71,7 +71,7 @@ function reducer(state, action) {
     case 'rename-label':
       return {
         ...state,
-        boxNames: updateBoxNames({ ...boxNames, [state.selectedBox + '']: action.data }),
+        allBoxesNames: updateBoxNames({ ...boxNames, [state.selectedBox + '']: action.data }),
       }
     case 'reset-zoom':
       return { ...state, zoom: initialState.zoom }

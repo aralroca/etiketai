@@ -47,7 +47,7 @@ export default function Right() {
                   placeholder="No label yet"
                   defaultValue={boxNames[index + ''] || ''}
                   onChange={(e) =>
-                    dispatch({ type: 'rename-label', data: e.value })
+                    dispatch({ type: 'rename-label', data: e.target.value })
                   }
                 />
               )
