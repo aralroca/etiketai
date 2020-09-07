@@ -21,10 +21,13 @@ export default function useKeyDownControls() {
 
       if (!keys.has(e.key)) return
 
-      // Duplicate box
+
       if (e.key === 'd') {
+        if (!e.metaKey && !e.ctrlKey) return
+
+        // Duplicate box
         e.preventDefault()
-        if (e.metaKey || e.ctrlKey) dispatch({ type: 'duplicate-box' })
+        dispatch({ type: 'duplicate-box' })
         return
       }
 

@@ -5,7 +5,7 @@ const cornerSize = 5
 
 /**
  * Check if the point { x, y } is inside a box [bx, by, bx2, by2]
- * 
+ *
  * @param {number} x - point X to check
  * @param {number} y - point Y to check
  * @param {number} bx - startX of Box
@@ -54,7 +54,6 @@ export default function useRedraw() {
 
     // Draw
     ctx.drawImage(img, 0, 0, width, height)
-    URL.revokeObjectURL(img.src)
 
     // Boxes
     boxes.forEach(([startX, startY, mouseX, mouseY], index) => {
@@ -129,9 +128,9 @@ export function useSelectBox() {
   const needsRedraw = useRef(false)
 
   /**
-   * This function calculates if there where we are clicking corresponds to 
-   * a box. In addition, if where we click is one of the points to resize, 
-   * we return the opposite corner, this is useful to define the opposite 
+   * This function calculates if there where we are clicking corresponds to
+   * a box. In addition, if where we click is one of the points to resize,
+   * we return the opposite corner, this is useful to define the opposite
    * corner as the origin and where we are clicking as the end, so we can then
    * resize the rectangles.
    */
@@ -149,10 +148,30 @@ export function useSelectBox() {
       if (isInside(x, y, startX, startY, startX, startY, padding)) {
         c = oppositeCorner = [mouseX, mouseY]
       }
-      if (isInside(x, y, startX + (mouseX - startX), startY, startX + (mouseX - startX), startY, padding)) {
+      if (
+        isInside(
+          x,
+          y,
+          startX + (mouseX - startX),
+          startY,
+          startX + (mouseX - startX),
+          startY,
+          padding
+        )
+      ) {
         c = oppositeCorner = [startX, startY + (mouseY - startY)]
       }
-      if (isInside(x, y, startX, startY + (mouseY - startY), startX, startY + (mouseY - startY), padding)) {
+      if (
+        isInside(
+          x,
+          y,
+          startX,
+          startY + (mouseY - startY),
+          startX,
+          startY + (mouseY - startY),
+          padding
+        )
+      ) {
         c = oppositeCorner = [startX + (mouseX - startX), startY]
       }
       if (isInside(x, y, mouseX, mouseY, mouseX, mouseY, padding)) {
