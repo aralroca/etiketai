@@ -11,7 +11,7 @@ function isRenamingLabel() {
 }
 
 export default function useKeyDownControls() {
-  const { state, dispatch } = useDashboard()
+  const { boxes, dispatch } = useDashboard()
   const redraw = useRedraw()
   const needsRedraw = useRef(false)
 
@@ -21,10 +21,13 @@ export default function useKeyDownControls() {
 
       if (!keys.has(e.key)) return
 
-      // Duplicate box
+
       if (e.key === 'd') {
+        if (!e.metaKey && !e.ctrlKey) return
+
+        // Duplicate box
         e.preventDefault()
-        if (e.metaKey || e.ctrlKey) dispatch({ type: 'duplicate-box' })
+        dispatch({ type: 'duplicate-box' })
         return
       }
 
@@ -40,5 +43,5 @@ export default function useKeyDownControls() {
   useEffect(() => {
     if (needsRedraw.current) redraw()
     needsRedraw.current = false
-  }, [state.boxes?.length])
+  }, [boxes.length])
 }

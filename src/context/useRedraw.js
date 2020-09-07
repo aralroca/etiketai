@@ -5,7 +5,7 @@ const cornerSize = 5
 
 /**
  * Check if the point { x, y } is inside a box [bx, by, bx2, by2]
- * 
+ *
  * @param {number} x - point X to check
  * @param {number} y - point Y to check
  * @param {number} bx - startX of Box
@@ -31,7 +31,7 @@ function arc(ctx, x, y) {
 }
 
 export default function useRedraw() {
-  const { state, imgRef, canvasRef, ctxRef } = useDashboard()
+  const { boxes, state, imgRef, canvasRef, ctxRef } = useDashboard()
 
   function redraw() {
     const img = imgRef.current
@@ -54,11 +54,9 @@ export default function useRedraw() {
 
     // Draw
     ctx.drawImage(img, 0, 0, width, height)
-    URL.revokeObjectURL(img.src)
 
     // Boxes
-    if (!state.boxes) return
-    state.boxes.forEach(([startX, startY, mouseX, mouseY], index) => {
+    boxes.forEach(([startX, startY, mouseX, mouseY], index) => {
       const color = index === state.selectedBox ? '#64b5f6' : '#aed581'
       ctx.beginPath()
       ctx.fillStyle = color + '44' //opacity
@@ -76,7 +74,7 @@ export default function useRedraw() {
 }
 
 export function useRedrawOnChangeFile() {
-  const { state, imgRef, canvasRef, ctxRef, dispatch } = useDashboard()
+  const { state, boxes, imgRef, canvasRef, ctxRef, dispatch } = useDashboard()
   const redraw = useRedraw()
   const file = state.files[state.fileIndex]
 
@@ -109,9 +107,9 @@ export function useRedrawOnChangeFile() {
   }, [file])
 
   useEffect(() => {
-    if (!file || !state.boxes || state.boxes.length === 0) return
+    if (!file || !boxes || boxes.length === 0) return
     redraw()
-  }, [file, state.boxes])
+  }, [file, boxes])
 }
 
 export function useRedrawOnResize() {
@@ -125,14 +123,14 @@ export function useRedrawOnResize() {
 }
 
 export function useSelectBox() {
-  const { state, dispatch, canvasRef } = useDashboard()
+  const { boxes, dispatch, canvasRef } = useDashboard()
   const redraw = useRedraw()
   const needsRedraw = useRef(false)
 
   /**
-   * This function calculates if there where we are clicking corresponds to 
-   * a box. In addition, if where we click is one of the points to resize, 
-   * we return the opposite corner, this is useful to define the opposite 
+   * This function calculates if there where we are clicking corresponds to
+   * a box. In addition, if where we click is one of the points to resize,
+   * we return the opposite corner, this is useful to define the opposite
    * corner as the origin and where we are clicking as the end, so we can then
    * resize the rectangles.
    */
@@ -140,7 +138,6 @@ export function useSelectBox() {
     const { left, top } = canvasRef.current.getBoundingClientRect()
     const x = e.clientX - left
     const y = e.clientY - top
-    const boxes = state.boxes || []
     let selected, oppositeCorner
     const padding = cornerSize + 2 / 2
 
@@ -151,10 +148,30 @@ export function useSelectBox() {
       if (isInside(x, y, startX, startY, startX, startY, padding)) {
         c = oppositeCorner = [mouseX, mouseY]
       }
-      if (isInside(x, y, startX + (mouseX - startX), startY, startX + (mouseX - startX), startY, padding)) {
+      if (
+        isInside(
+          x,
+          y,
+          startX + (mouseX - startX),
+          startY,
+          startX + (mouseX - startX),
+          startY,
+          padding
+        )
+      ) {
         c = oppositeCorner = [startX, startY + (mouseY - startY)]
       }
-      if (isInside(x, y, startX, startY + (mouseY - startY), startX, startY + (mouseY - startY), padding)) {
+      if (
+        isInside(
+          x,
+          y,
+          startX,
+          startY + (mouseY - startY),
+          startX,
+          startY + (mouseY - startY),
+          padding
+        )
+      ) {
         c = oppositeCorner = [startX + (mouseX - startX), startY]
       }
       if (isInside(x, y, mouseX, mouseY, mouseX, mouseY, padding)) {
