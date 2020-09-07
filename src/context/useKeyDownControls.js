@@ -16,9 +16,18 @@ export default function useKeyDownControls() {
   const needsRedraw = useRef(false)
 
   useEffect(() => {
-    const keys = new Set(['Escape', 'Backspace'])
+    const keys = new Set(['Escape', 'Backspace', 'd'])
     function onKeyDown(e) {
+
       if (!keys.has(e.key)) return
+
+      // Duplicate box
+      if (e.key === 'd') {
+        e.preventDefault()
+        if (e.metaKey || e.ctrlKey) dispatch({ type: 'duplicate-box' })
+        return
+      }
+
       if (isRenamingLabel()) return
       needsRedraw.current = true
       dispatch({ type: 'remove-box' })
