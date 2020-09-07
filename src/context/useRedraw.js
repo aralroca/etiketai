@@ -31,7 +31,7 @@ function arc(ctx, x, y) {
 }
 
 export default function useRedraw() {
-  const { state, imgRef, canvasRef, ctxRef } = useDashboard()
+  const { boxes, state, imgRef, canvasRef, ctxRef } = useDashboard()
 
   function redraw() {
     const img = imgRef.current
@@ -57,8 +57,7 @@ export default function useRedraw() {
     URL.revokeObjectURL(img.src)
 
     // Boxes
-    if (!state.boxes) return
-    state.boxes.forEach(([startX, startY, mouseX, mouseY], index) => {
+    boxes.forEach(([startX, startY, mouseX, mouseY], index) => {
       const color = index === state.selectedBox ? '#64b5f6' : '#aed581'
       ctx.beginPath()
       ctx.fillStyle = color + '44' //opacity
@@ -76,7 +75,7 @@ export default function useRedraw() {
 }
 
 export function useRedrawOnChangeFile() {
-  const { state, imgRef, canvasRef, ctxRef, dispatch } = useDashboard()
+  const { state, boxes, imgRef, canvasRef, ctxRef, dispatch } = useDashboard()
   const redraw = useRedraw()
   const file = state.files[state.fileIndex]
 
@@ -109,9 +108,9 @@ export function useRedrawOnChangeFile() {
   }, [file])
 
   useEffect(() => {
-    if (!file || !state.boxes || state.boxes.length === 0) return
+    if (!file || !boxes || boxes.length === 0) return
     redraw()
-  }, [file, state.boxes])
+  }, [file, boxes])
 }
 
 export function useRedrawOnResize() {
@@ -125,7 +124,7 @@ export function useRedrawOnResize() {
 }
 
 export function useSelectBox() {
-  const { state, dispatch, canvasRef } = useDashboard()
+  const { boxes, dispatch, canvasRef } = useDashboard()
   const redraw = useRedraw()
   const needsRedraw = useRef(false)
 
@@ -140,7 +139,6 @@ export function useSelectBox() {
     const { left, top } = canvasRef.current.getBoundingClientRect()
     const x = e.clientX - left
     const y = e.clientY - top
-    const boxes = state.boxes || []
     let selected, oppositeCorner
     const padding = cornerSize + 2 / 2
 

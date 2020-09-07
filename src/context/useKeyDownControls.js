@@ -11,7 +11,7 @@ function isRenamingLabel() {
 }
 
 export default function useKeyDownControls() {
-  const { state, dispatch } = useDashboard()
+  const { boxes, dispatch } = useDashboard()
   const redraw = useRedraw()
   const needsRedraw = useRef(false)
 
@@ -40,5 +40,5 @@ export default function useKeyDownControls() {
   useEffect(() => {
     if (needsRedraw.current) redraw()
     needsRedraw.current = false
-  }, [state.boxes?.length])
+  }, [boxes.length])
 }

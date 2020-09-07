@@ -15,7 +15,7 @@ let movingBox
 let resizing
 
 export default function Center() {
-  const { state, canvasRef, dispatch } = useDashboard()
+  const { state, boxes, canvasRef, dispatch } = useDashboard()
   const onZoom = useZoom()
   const file = state.files[state.fileIndex]
   const selectBox = useSelectBox()
@@ -63,7 +63,7 @@ export default function Center() {
     }
     else if (newBox) dispatch({ type: 'add-box', data })
     else if (resizing > -1) dispatch({ type: 'edit-box', data: { box: data, index: resizing } })
-    else dispatch({ type: 'edit-box', data: { box: data, index: state.boxes.length - 1 } })
+    else dispatch({ type: 'edit-box', data: { box: data, index: boxes.length - 1 } })
     newBox = false
   }
 

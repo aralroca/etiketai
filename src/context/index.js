@@ -3,31 +3,46 @@ import { createContext, useContext, useReducer, useEffect, useRef } from 'react'
 const Ctx = createContext({})
 
 const initialState = {
+  allBoxes: {},
+  allBoxesNames: {},
   files: [],
   saved: false,
   size: {},
   zoom: 0,
-  boxNames: {},
 }
 
 function reducer(state, action) {
+  const boxes = (state.allBoxes[state.fileIndex] || []).slice()
+  const boxNames = state.allBoxesNames[state.fileIndex] || {}
+
+  function updateBoxes(b) {
+    return {
+      ...state.allBoxes,
+      [state.fileIndex]: b
+    }
+  }
+
+  function updateBoxNames(names) {
+    return {
+      ...state.allBoxesNames,
+      [state.fileIndex]: names
+    }
+  }
+
   switch (action.type) {
-    case 'add-box': {
-      const boxes = state.boxes || []
+    case 'add-box':
       return {
         ...state,
         selectedBox: boxes.length,
-        boxes: [...boxes, action.data],
+        allBoxes: updateBoxes([...boxes, action.data]),
       }
-    }
     case 'duplicate-box':
       return {
         ...state,
-        selectedBox: state.boxes.length,
-        boxes: [...state.boxes, state.boxes[state.selectedBox]],
+        selectedBox: boxes.length,
+        allBoxes: updateBoxes([...boxes, boxes[state.selectedBox]]),
       }
     case 'move-box': {
-      const boxes = (state.boxes || []).slice()
       const [osx, osy, omx, omy] = boxes[state.selectedBox]
       const [sx, sy, mx, my] = action.data
       const x = mx - sx
@@ -35,27 +50,28 @@ function reducer(state, action) {
 
       boxes[state.selectedBox] = [osx + x, osy + y, omx + x, omy + y]
 
-      return { ...state, boxes }
+      return { ...state, allBoxes: updateBoxes(boxes) }
     }
     case 'edit-box':
       return {
         ...state,
         selectedBox: action.data.index,
-        boxes: state.boxes
-          .map((box, i) => i === action.data.index ? action.data.box : box),
+        allBoxes: updateBoxes(boxes
+          .map((box, i) => i === action.data.index ? action.data.box : box)
+        ),
       }
     case 'remove-box':
       return {
         ...state,
         selectedBox: undefined,
-        boxes: (state.boxes || []).filter((_, i) => i != state.selectedBox),
+        allBoxes: updateBoxes(boxes.filter((_, i) => i != state.selectedBox)),
       }
     case 'select-box':
       return { ...state, selectedBox: action.data }
     case 'rename-label':
       return {
         ...state,
-        boxNames: { ...state.boxNames, [state.selectedBox + '']: action.data },
+        boxNames: updateBoxNames({ ...boxNames, [state.selectedBox + '']: action.data }),
       }
     case 'reset-zoom':
       return { ...state, zoom: initialState.zoom }
@@ -73,6 +89,7 @@ function reducer(state, action) {
     case 'next':
       return {
         ...state,
+        selectedBox: -1,
         fileIndex:
           state.fileIndex < state.files.length - 1
             ? state.fileIndex + 1
@@ -81,11 +98,13 @@ function reducer(state, action) {
     case 'prev':
       return {
         ...state,
+        selectedBox: -1,
         fileIndex: state.fileIndex > 0 ? state.fileIndex - 1 : state.fileIndex,
       }
     case 'change-file':
       return {
         ...state,
+        selectedBox: -1,
         fileIndex: action.data,
       }
     default:
@@ -98,6 +117,8 @@ export function DashboardProvider({ children }) {
   const ctxRef = useRef()
   const imgRef = useRef()
   const [state, dispatch] = useReducer(reducer, initialState)
+  const boxes = state.allBoxes[state.fileIndex] || []
+  const boxNames = state.allBoxesNames[state.fileIndex] || {}
 
   useEffect(() => {
     if (state.files.length === 0 || state.saved) return
@@ -115,7 +136,7 @@ export function DashboardProvider({ children }) {
   }, [state.files, state.saved])
 
   return (
-    <Ctx.Provider value={{ state, dispatch, canvasRef, ctxRef, imgRef }}>
+    <Ctx.Provider value={{ state, boxes, boxNames, dispatch, canvasRef, ctxRef, imgRef }}>
       {children}
     </Ctx.Provider>
   )

@@ -7,9 +7,10 @@ import styles from './styles.module.css'
 
 export default function Right() {
   const redraw = useRedraw()
-  const { state, dispatch } = useDashboard()
+  const { state, boxes, boxNames, dispatch } = useDashboard()
   const needsRedraw = useRef(false)
-  const { boxes = [], boxNames = {}, selectedBox } = state
+  const { selectedBox } = state
+  const file = state.files?.[state.fileIndex] || {}
 
   useEffect(() => {
     if (!needsRedraw.current) return
@@ -20,7 +21,7 @@ export default function Right() {
   return (
     <div className={styles.right}>
       <p className={styles.title}>
-        {state.files?.[state.fileIndex]?.name || 'Box'} labels
+        {file.name || 'Box'} labels
       </p>
       <div className={styles.content}>
         {boxes.length === 0 ? (
