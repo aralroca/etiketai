@@ -134,7 +134,7 @@ export function useSelectBox() {
    * corner as the origin and where we are clicking as the end, so we can then
    * resize the rectangles.
    */
-  function selectBox(e) {
+  function selectBox(e, autoselect = false) {
     const { left, top } = canvasRef.current.getBoundingClientRect()
     const x = e.clientX - left
     const y = e.clientY - top
@@ -182,7 +182,7 @@ export function useSelectBox() {
       }
     }
 
-    if (selected !== undefined) {
+    if (autoselect && selected !== undefined) {
       needsRedraw.current = true
       dispatch({ type: 'select-box', data: selected })
     }

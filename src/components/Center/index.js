@@ -32,7 +32,7 @@ export default function Center() {
 
   function onMouseDown(e) {
     const { left, top } = canvasRef.current.getBoundingClientRect()
-    const { selected, oppositeCorner } = selectBox(e)
+    const { selected, oppositeCorner } = selectBox(e, true)
     const [x, y] = oppositeCorner || []
 
     startX = x || parseInt(e.clientX - left, 10)
@@ -47,7 +47,25 @@ export default function Center() {
     e.preventDefault()
     e.stopPropagation()
 
-    if (!isDown) return
+    if (!isDown) {
+      const { selected, oppositeCorner } = selectBox(e)
+
+      if (oppositeCorner) {
+        const [w, h] = oppositeCorner
+        const [w1, h1, w2, h2] = boxes[selected]
+        const left = Math.max(w, w1, w2) === w
+        const top = Math.max(h, h1, h2) === h
+        const nesw = (top && !left) || (!top && left)
+        canvasRef.current.style = `cursor: ${
+          nesw ? 'nesw-resize' : 'nwse-resize'
+        };`
+      } else if (selected > -1) {
+        canvasRef.current.style = 'cursor: move;'
+      } else {
+        canvasRef.current.style = 'cursor: crosshair;'
+      }
+      return
+    }
 
     const { left, top } = canvasRef.current.getBoundingClientRect()
     const mouseX = parseInt(e.clientX - left, 10)
@@ -60,10 +78,14 @@ export default function Center() {
       startX = mouseX
       startY = mouseY
       dispatch({ type: 'move-box', data })
-    }
-    else if (newBox) dispatch({ type: 'add-box', data })
-    else if (resizing > -1) dispatch({ type: 'edit-box', data: { box: data, index: resizing } })
-    else dispatch({ type: 'edit-box', data: { box: data, index: boxes.length - 1 } })
+    } else if (newBox) dispatch({ type: 'add-box', data })
+    else if (resizing > -1)
+      dispatch({ type: 'edit-box', data: { box: data, index: resizing } })
+    else
+      dispatch({
+        type: 'edit-box',
+        data: { box: data, index: boxes.length - 1 },
+      })
     newBox = false
   }
 
