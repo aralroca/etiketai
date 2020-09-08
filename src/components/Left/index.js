@@ -4,14 +4,15 @@ import useZoom from '../../context/useZoom'
 
 const DELTA = 2
 
-function Item({ label, icon, onAction, type }) {
-  const onClick = type === 'input[file]' ? undefined : onAction
+function Item({ label, icon, onAction, type, disabled }) {
+  const onClick = type === 'input[file]' || disabled ? undefined : onAction
+  const disabledClass = disabled ? styles.disabled : ''
   const inputFileElement = type === 'input[file]' && (
     <input accept="image/*" multiple onChange={onAction} type="file" />
   )
 
   return (
-    <div className={styles.item} onClick={onClick}>
+    <div className={`${styles.item} ${disabledClass}`} onClick={onClick}>
       <div className={styles.icon}>{icon}</div>
       <div className={styles.label}>
         {inputFileElement}
@@ -26,6 +27,7 @@ const getItem = (item) => (
     icon={item.icon}
     key={item.label}
     label={item.label}
+    disabled={item.disabled}
     onAction={item.action}
     type={item.type}
   />
@@ -47,8 +49,13 @@ function ZoomPercentage() {
 }
 
 export default function Left() {
-  const { state, dispatch } = useDashboard()
+  const { state, boxes, dispatch } = useDashboard()
   const onZoom = useZoom()
+  const hasFiles = state.files.length > 0
+  const hasSelectedBox = state.selectedBox > -1
+  const isFirst = state.fileIndex === 0
+  const isLast = state.fileIndex === state.files.length - 1
+  const hasBoxes = boxes.length > 0
 
   const globalList = [
     {
@@ -61,15 +68,18 @@ export default function Left() {
       label: 'Next',
       icon: '⇨',
       action: () => dispatch({ type: 'next' }),
+      disabled: !hasFiles || isLast,
     },
     {
       label: 'Prev',
       icon: '⇦',
       action: () => dispatch({ type: 'prev' }),
+      disabled: !hasFiles || isFirst,
     },
     {
       label: 'Save',
       icon: '💾',
+      disabled: !hasFiles || !hasBoxes,
     },
   ].map(getItem)
 
@@ -77,26 +87,25 @@ export default function Left() {
     {
       label: 'Duplicate RectBox',
       icon: '📑',
-      action: () => {
-        if (typeof state.selectedBox !== 'number') {
-          return alert('You should select a RectBox')
-        }
-        dispatch({ type: 'duplicate-box' })
-      },
+      disabled: !hasFiles || !hasSelectedBox,
+      action: () => dispatch({ type: 'duplicate-box' }),
     },
     {
       label: 'Delete RectBox',
       icon: '❌',
+      disabled: !hasFiles || !hasSelectedBox,
       action: () => dispatch({ type: 'remove-box' }),
     },
     {
       label: 'Zoom in',
       icon: '🔍',
+      disabled: !hasFiles,
       action: () => onZoom(DELTA),
     },
     {
       label: 'Zoom out',
       icon: '🔍',
+      disabled: !hasFiles,
       action: () => onZoom(-DELTA),
     },
   ].map(getItem)

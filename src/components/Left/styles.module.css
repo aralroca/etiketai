@@ -10,7 +10,12 @@
   border-bottom: 1px solid #b0bec5;
 }
 
-.item:hover {
+.item.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.item:hover:not(.disabled) {
   background-color: #eeeeaa;
 }
 
