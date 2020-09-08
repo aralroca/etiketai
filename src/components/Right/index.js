@@ -45,7 +45,7 @@ export default function Right() {
                     needsRedraw.current = true
                   }}
                   placeholder="No label yet"
-                  defaultValue={boxNames[index + ''] || ''}
+                  defaultValue={boxNames[realIndex + ''] || ''}
                   onChange={(e) =>
                     dispatch({ type: 'rename-label', data: e.target.value })
                   }
