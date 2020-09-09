@@ -36,3 +36,22 @@
   left: 0;
   opacity: 0;
 }
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.buttons button {
+  background-color: transparent;
+  border: 1px solid black;
+  margin: 5px;
+  border-radius: 2px;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.buttons button:last-child {
+  background-color: #ffcdd2;
+  border: 1px solid #ffcdd2;
+}

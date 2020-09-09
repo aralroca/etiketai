@@ -13,13 +13,14 @@ function isRenamingLabel() {
 }
 
 export default function useKeyDownControls() {
-  const { boxes, dispatch } = useDashboard()
+  const { state, boxes, dispatch } = useDashboard()
   const redraw = useRedraw()
   const needsRedraw = useRef(false)
+  const modalOpen = state.isSaveModalOpen
 
   useEffect(() => {
     function onKeyDown(e) {
-      if (!keys.has(e.key)) return
+      if (!keys.has(e.key) || modalOpen) return
 
       if (e.key === 'ArrowRight' && !isRenamingLabel()) {
         dispatch({ type: 'next' })
@@ -47,7 +48,7 @@ export default function useKeyDownControls() {
 
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [])
+  }, [state, modalOpen])
 
   useEffect(() => {
     if (needsRedraw.current) redraw()
