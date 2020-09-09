@@ -1,8 +1,4 @@
 /**
- *
- * @todo Add tests to transform boxes to PascalVOC or YOLO format
- * @todo save files
- *
  * @param {string} dataurl
  * @param {string} filename
  * @example download("data:text/html,HelloWorld!", "helloWorld.txt");
