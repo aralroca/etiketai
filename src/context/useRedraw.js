@@ -103,7 +103,10 @@ export function useRedrawOnChangeFile() {
 
     window.addEventListener('resize', handler)
 
-    return () => window.removeEventListener('resize', handler)
+    return () => {
+      URL.revokeObjectURL(img.src)
+      window.removeEventListener('resize', handler)
+    }
   }, [file])
 
   useEffect(() => {

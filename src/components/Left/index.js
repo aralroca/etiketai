@@ -1,8 +1,86 @@
-import styles from './styles.module.css'
-import { useDashboard } from '../../context'
+import Modal from '../Modal'
+import download from '../../utils/download'
+import getPascalVocLabels from '../../utils/getPascalVocLabels'
+import getYoloLabels from '../../utils/getYoloLabels'
 import useZoom from '../../context/useZoom'
+import { useDashboard } from '../../context'
+
+import styles from './styles.module.css'
 
 const DELTA = 2
+
+export default function Left() {
+  const { state, boxes, dispatch } = useDashboard()
+  const onZoom = useZoom()
+  const hasFiles = state.files.length > 0
+  const hasSelectedBox = state.selectedBox > -1
+  const isFirst = state.fileIndex === 0
+  const isLast = state.fileIndex === state.files.length - 1
+  const hasBoxes = boxes.length > 0
+
+  const globalList = [
+    {
+      label: 'Open',
+      icon: '📂',
+      type: 'input[file]',
+      action: (e) => dispatch({ type: 'load', data: e.target.files }),
+    },
+    {
+      label: 'Next',
+      icon: '⇨',
+      action: () => dispatch({ type: 'next' }),
+      disabled: !hasFiles || isLast,
+    },
+    {
+      label: 'Prev',
+      icon: '⇦',
+      action: () => dispatch({ type: 'prev' }),
+      disabled: !hasFiles || isFirst,
+    },
+    {
+      label: 'Save',
+      icon: '💾',
+      disabled: !hasFiles || !hasBoxes,
+      action: () => dispatch({ type: 'toggle-save-modal' }),
+    },
+  ].map(getItem)
+
+  const imageMenuList = [
+    {
+      label: 'Duplicate RectBox',
+      icon: '📑',
+      disabled: !hasFiles || !hasSelectedBox,
+      action: () => dispatch({ type: 'duplicate-box' }),
+    },
+    {
+      label: 'Delete RectBox',
+      icon: '❌',
+      disabled: !hasFiles || !hasSelectedBox,
+      action: () => dispatch({ type: 'remove-box' }),
+    },
+    {
+      label: 'Zoom in',
+      icon: '🔍',
+      disabled: !hasFiles,
+      action: () => onZoom(DELTA),
+    },
+    {
+      label: 'Zoom out',
+      icon: '🔍',
+      disabled: !hasFiles,
+      action: () => onZoom(-DELTA),
+    },
+  ].map(getItem)
+
+  return (
+    <>
+      {globalList}
+      {imageMenuList}
+      <ZoomPercentage />
+      <SaveModal />
+    </>
+  )
+}
 
 function Item({ label, icon, onAction, type, disabled }) {
   const onClick = type === 'input[file]' || disabled ? undefined : onAction
@@ -48,73 +126,77 @@ function ZoomPercentage() {
   )
 }
 
-export default function Left() {
-  const { state, boxes, dispatch } = useDashboard()
-  const onZoom = useZoom()
-  const hasFiles = state.files.length > 0
-  const hasSelectedBox = state.selectedBox > -1
-  const isFirst = state.fileIndex === 0
-  const isLast = state.fileIndex === state.files.length - 1
-  const hasBoxes = boxes.length > 0
+function SaveModal() {
+  const { state, boxes, boxNames, dispatch } = useDashboard()
+  const { size } = state
+  const close = () => dispatch({ type: 'toggle-save-modal' })
 
-  const globalList = [
-    {
-      label: 'Open',
-      icon: '📂',
-      type: 'input[file]',
-      action: (e) => dispatch({ type: 'load', data: e.target.files }),
-    },
-    {
-      label: 'Next',
-      icon: '⇨',
-      action: () => dispatch({ type: 'next' }),
-      disabled: !hasFiles || isLast,
-    },
-    {
-      label: 'Prev',
-      icon: '⇦',
-      action: () => dispatch({ type: 'prev' }),
-      disabled: !hasFiles || isFirst,
-    },
-    {
-      label: 'Save',
-      icon: '💾',
-      disabled: !hasFiles || !hasBoxes,
-    },
-  ].map(getItem)
+  async function onSave(e) {
+    e.preventDefault()
+    const [format, files] = Array.prototype.slice.call(e.target)
+      .filter(f => f.checked)
+      .map(f => f.value)
 
-  const imageMenuList = [
-    {
-      label: 'Duplicate RectBox',
-      icon: '📑',
-      disabled: !hasFiles || !hasSelectedBox,
-      action: () => dispatch({ type: 'duplicate-box' }),
-    },
-    {
-      label: 'Delete RectBox',
-      icon: '❌',
-      disabled: !hasFiles || !hasSelectedBox,
-      action: () => dispatch({ type: 'remove-box' }),
-    },
-    {
-      label: 'Zoom in',
-      icon: '🔍',
-      disabled: !hasFiles,
-      action: () => onZoom(DELTA),
-    },
-    {
-      label: 'Zoom out',
-      icon: '🔍',
-      disabled: !hasFiles,
-      action: () => onZoom(-DELTA),
-    },
-  ].map(getItem)
+    const all = files === 'all'
+
+    const boxesToDownload = all
+      ? state.files.map((_, i) => state.allBoxes[i])
+      : [boxes]
+
+    const namesOfBoxes = all
+      ? state.files.map((_, i) => state.allBoxesNames[i])
+      : [boxNames]
+
+    const relatedFiles = all
+      ? state.files
+      : [state.files[state.fileIndex]]
+
+    const labels = format === 'xml'
+      ? await getPascalVocLabels(boxesToDownload, relatedFiles, namesOfBoxes, size)
+      : getYoloLabels(boxesToDownload, relatedFiles, namesOfBoxes, size)
+
+    labels.forEach(({ dataurl, filename }) => download(dataurl, filename))
+    close()
+  }
 
   return (
-    <>
-      {globalList}
-      {imageMenuList}
-      <ZoomPercentage />
-    </>
+    <Modal
+      title="Save labels"
+      open={state.isSaveModalOpen}
+      onClose={close}
+    >
+      <form onSubmit={onSave}>
+        <p>Format:</p>
+
+        <div>
+          <input type="radio" id="xml" name="format" value="xml"
+            checked />
+          <label for="xml">PascalVOC (.xml)</label>
+        </div>
+
+        <div>
+          <input type="radio" id="txt" name="format" value="txt" />
+          <label for="txt">YOLO (.txt)</label>
+        </div>
+
+        <p>Labels to download:</p>
+
+        <div>
+          <input type="radio" id="current" name="files" value="current"
+            checked />
+          <label for="current">Current file</label>
+        </div>
+
+        <div>
+          <input type="radio" id="all" name="files" value="all" />
+          <label for="all">All files</label>
+        </div>
+
+        <div className={styles.buttons}>
+          <button>Download</button>
+          <button type="button" onClick={close}>Cancel</button>
+        </div>
+      </form>
+    </Modal>
   )
 }

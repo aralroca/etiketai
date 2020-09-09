@@ -30,6 +30,10 @@ function reducer(state, action) {
   }
 
   switch (action.type) {
+    case 'toggle-save-modal': return {
+      ...state,
+      isSaveModalOpen: !state.isSaveModalOpen,
+    }
     case 'add-box':
       return {
         ...state,
@@ -83,8 +87,8 @@ function reducer(state, action) {
       return {
         ...state,
         saved: false,
-        files: [...action.data, ...state.files],
-        fileIndex: 0,
+        files: [...state.files, ...action.data],
+        fileIndex: state.files.length,
       }
     case 'next':
       return {
