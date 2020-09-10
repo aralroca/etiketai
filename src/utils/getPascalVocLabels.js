@@ -14,31 +14,31 @@ function xml(boxes, file, boxNames, { w, h }, canvasSize) {
   const fixH = y => parseInt((y * h) / realH, 10)
 
   return `<annotation>
-  <filename>${file.name}</filename>
-  <source>
-		<database>Unknown</database>
-	</source>
-  <size>
-    <width>${w}</width>
-    <height>${h}</height>
-    <depth>3</depth>
-  </size>
-  <segmented>0</segmented>
-  ${boxes.map(([x, y, mx, my], index) => `
-    <object>
-      <name>${boxNames?.[index]}</name>
-      <pose>Unspecified</pose>
-      <truncated>0</truncated>
-      <difficult>0</difficult>
-      <bndbox>
-        <xmin>${fixW(x)}</xmin>
-        <ymin>${fixH(y)}</ymin>
-        <xmax>${fixW(mx)}</xmax>
-        <ymax>${fixH(my)}</ymax>
-      </bndbox>
-    </object>
-  `).join('\n')}
-</annotation>`
+    <filename>${file.name}</filename>
+    <source>
+      <database>Unknown</database>
+    </source>
+    <size>
+      <width>${w}</width>
+      <height>${h}</height>
+      <depth>3</depth>
+    </size>
+    <segmented>0</segmented>
+    ${boxes.map(([x, y, mx, my], index) => `
+      <object>
+        <name>${boxNames?.[index]}</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+          <xmin>${fixW(x)}</xmin>
+          <ymin>${fixH(y)}</ymin>
+          <xmax>${fixW(mx)}</xmax>
+          <ymax>${fixH(my)}</ymax>
+        </bndbox>
+      </object>
+    `).join('\n')}
+  </annotation>`.replace(/(\n| |\t)/g, '')
 }
 
 export default async function getPascalVocLabels(allBoxes, files, labels, size) {
