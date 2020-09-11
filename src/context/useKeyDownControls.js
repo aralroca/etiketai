@@ -7,8 +7,7 @@ const keys = new Set(['Escape', 'Backspace', 'd', 'ArrowRight', 'ArrowLeft'])
 function isRenamingLabel() {
   return (
     document.activeElement.tagName === 'INPUT' &&
-    document.activeElement.className.includes('box') &&
-    document.activeElement.value
+    document.activeElement.className.includes('box')
   )
 }
 
