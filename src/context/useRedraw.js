@@ -121,16 +121,6 @@ export function useRedrawOnChangeFile() {
   }, [file, boxes])
 }
 
-export function useRedrawOnResize() {
-  const { state, imgRef } = useDashboard()
-  const redraw = useRedraw()
-
-  useEffect(() => {
-    if (!imgRef.current) return
-    redraw()
-  }, [state.size.width])
-}
-
 export function useSelectBox() {
   const { boxes, dispatch, canvasRef } = useDashboard()
   const redraw = useRedraw()
