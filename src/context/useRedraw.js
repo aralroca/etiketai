@@ -87,12 +87,10 @@ export function useRedrawOnChangeFile() {
   const onZoom = useZoom()
   const oldIndex = useRef()
   const file = state.files[state.fileIndex]
+  let img
 
   useEffect(() => {
     if (!file) return
-
-    const context = canvasRef.current.getContext('2d')
-    const img = new Image()
 
     function handler() {
       onZoom(-state.zoom)
@@ -107,17 +105,18 @@ export function useRedrawOnChangeFile() {
     }
 
     if (oldIndex.current !== state.fileIndex) {
+      img = new Image()
       img.src = URL.createObjectURL(file)
       img.onload = handler
       imgRef.current = img
-      ctxRef.current = context
+      ctxRef.current = canvasRef.current.getContext('2d')
     }
 
     oldIndex.current = state.fileIndex
     window.addEventListener('resize', handler)
 
     return () => {
-      URL.revokeObjectURL(img.src)
+      if (img) URL.revokeObjectURL(img.src)
       window.removeEventListener('resize', handler)
     }
   }, [file, state])
