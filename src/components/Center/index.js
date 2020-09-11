@@ -73,8 +73,10 @@ export default function Center() {
       startX = mouseX
       startY = mouseY
       dispatch({ type: 'move-box', data })
-    } else if (newBox) dispatch({ type: 'add-box', data })
-    else if (resizing > -1)
+    } else if (newBox) {
+      dispatch({ type: 'add-box', data })
+      requestAnimationFrame(() => document.querySelector('input[list]').focus())
+    } else if (resizing > -1)
       dispatch({ type: 'edit-box', data: { box: data, index: resizing } })
     else
       dispatch({
