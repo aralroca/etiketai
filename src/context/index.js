@@ -6,7 +6,7 @@ const initialState = {
   allBoxes: {},
   allBoxesNames: {},
   files: [],
-  saved: false,
+  saved: true,
   size: {},
   zoom: 0,
 }
@@ -18,32 +18,40 @@ function reducer(state, action) {
   function updateBoxes(b) {
     return {
       ...state.allBoxes,
-      [state.fileIndex]: b
+      [state.fileIndex]: b,
     }
   }
 
   function updateBoxNames(names) {
     return {
       ...state.allBoxesNames,
-      [state.fileIndex]: names
+      [state.fileIndex]: names,
     }
   }
 
   switch (action.type) {
-    case 'toggle-save-modal': return {
-      ...state,
-      isSaveModalOpen: !state.isSaveModalOpen,
-    }
+    case 'save':
+      return {
+        ...state,
+        saved: true,
+      }
+    case 'toggle-save-modal':
+      return {
+        ...state,
+        isSaveModalOpen: !state.isSaveModalOpen,
+      }
     case 'add-box':
       return {
         ...state,
         selectedBox: boxes.length,
+        saved: false,
         allBoxes: updateBoxes([...boxes, action.data]),
       }
     case 'duplicate-box':
       return {
         ...state,
         selectedBox: boxes.length,
+        saved: false,
         allBoxes: updateBoxes([...boxes, boxes[state.selectedBox]]),
       }
     case 'move-box': {
@@ -54,19 +62,23 @@ function reducer(state, action) {
 
       boxes[state.selectedBox] = [osx + x, osy + y, omx + x, omy + y]
 
-      return { ...state, allBoxes: updateBoxes(boxes) }
+      return { ...state, saved: false, allBoxes: updateBoxes(boxes) }
     }
     case 'edit-box':
       return {
         ...state,
+        saved: false,
         selectedBox: action.data.index,
-        allBoxes: updateBoxes(boxes
-          .map((box, i) => i === action.data.index ? action.data.box : box)
+        allBoxes: updateBoxes(
+          boxes.map((box, i) =>
+            i === action.data.index ? action.data.box : box
+          )
         ),
       }
     case 'remove-box':
       return {
         ...state,
+        saved: false,
         selectedBox: undefined,
         allBoxes: updateBoxes(boxes.filter((_, i) => i != state.selectedBox)),
       }
@@ -75,7 +87,11 @@ function reducer(state, action) {
     case 'rename-label':
       return {
         ...state,
-        allBoxesNames: updateBoxNames({ ...boxNames, [state.selectedBox + '']: action.data }),
+        saved: false,
+        allBoxesNames: updateBoxNames({
+          ...boxNames,
+          [state.selectedBox + '']: action.data,
+        }),
       }
     case 'reset-zoom':
       return { ...state, zoom: initialState.zoom }
@@ -86,7 +102,6 @@ function reducer(state, action) {
     case 'load':
       return {
         ...state,
-        saved: false,
         files: [...state.files, ...action.data],
         fileIndex: state.files.length,
       }
@@ -140,7 +155,9 @@ export function DashboardProvider({ children }) {
   }, [state.files, state.saved])
 
   return (
-    <Ctx.Provider value={{ state, boxes, boxNames, dispatch, canvasRef, ctxRef, imgRef }}>
+    <Ctx.Provider
+      value={{ state, boxes, boxNames, dispatch, canvasRef, ctxRef, imgRef }}
+    >
       {children}
     </Ctx.Provider>
   )

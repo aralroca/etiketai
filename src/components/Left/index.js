@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import Modal from '../Modal'
 import download from '../../utils/download'
 import getPascalVocLabels from '../../utils/getPascalVocLabels'
@@ -10,13 +12,27 @@ import styles from './styles.module.css'
 const DELTA = 2
 
 export default function Left() {
-  const { state, boxes, dispatch } = useDashboard()
+  const { state, dispatch } = useDashboard()
   const onZoom = useZoom()
   const hasFiles = state.files.length > 0
   const hasSelectedBox = state.selectedBox > -1
   const isFirst = state.fileIndex === 0
   const isLast = state.fileIndex === state.files.length - 1
-  const hasBoxes = boxes.length > 0
+  const hasBoxes = Object.values(state.allBoxes).flat().length > 0
+
+  useEffect(() => {
+    if (state.saved || !hasBoxes) return
+
+    function unload(e) {
+      const msg =
+        'Do you really want to close? Changes that you made may not be saved.'
+      e.returnValue = msg
+      return msg
+    }
+
+    window.addEventListener('beforeunload', unload)
+    return () => window.removeEventListener('beforeunload', unload)
+  }, [state.saved, hasBoxes])
 
   const globalList = [
     {
@@ -133,9 +149,10 @@ function SaveModal() {
 
   async function onSave(e) {
     e.preventDefault()
-    const [format, files] = Array.prototype.slice.call(e.target)
-      .filter(f => f.checked)
-      .map(f => f.value)
+    const [format, files] = Array.prototype.slice
+      .call(e.target)
+      .filter((f) => f.checked)
+      .map((f) => f.value)
 
     const all = files === 'all'
 
@@ -147,30 +164,29 @@ function SaveModal() {
       ? state.files.map((_, i) => state.allBoxesNames[i])
       : [boxNames]
 
-    const relatedFiles = all
-      ? state.files
-      : [state.files[state.fileIndex]]
+    const relatedFiles = all ? state.files : [state.files[state.fileIndex]]
 
-    const labels = format === 'xml'
-      ? await getPascalVocLabels(boxesToDownload, relatedFiles, namesOfBoxes, size)
-      : await getYoloLabels(boxesToDownload, relatedFiles, namesOfBoxes, size)
+    const labels =
+      format === 'xml'
+        ? await getPascalVocLabels(
+            boxesToDownload,
+            relatedFiles,
+            namesOfBoxes,
+            size
+          )
+        : await getYoloLabels(boxesToDownload, relatedFiles, namesOfBoxes, size)
 
     labels.forEach(({ dataurl, filename }) => download(dataurl, filename))
     close()
   }
 
   return (
-    <Modal
-      title="Save labels"
-      open={state.isSaveModalOpen}
-      onClose={close}
-    >
+    <Modal title="Save labels" open={state.isSaveModalOpen} onClose={close}>
       <form onSubmit={onSave}>
         <p>Format:</p>
 
         <div>
-          <input type="radio" id="xml" name="format" value="xml"
-            checked />
+          <input type="radio" id="xml" name="format" value="xml" checked />
           <label for="xml">PascalVOC (.xml)</label>
         </div>
 
@@ -182,8 +198,13 @@ function SaveModal() {
         <p>Labels to download:</p>
 
         <div>
-          <input type="radio" id="current" name="files" value="current"
-            checked />
+          <input
+            type="radio"
+            id="current"
+            name="files"
+            value="current"
+            checked
+          />
           <label for="current">Current file</label>
         </div>
 
@@ -194,7 +215,9 @@ function SaveModal() {
 
         <div className={styles.buttons}>
           <button>Download</button>
-          <button type="button" onClick={close}>Cancel</button>
+          <button type="button" onClick={close}>
+            Cancel
+          </button>
         </div>
       </form>
     </Modal>
