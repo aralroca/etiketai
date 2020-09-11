@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useDashboard } from '.'
 import useRedraw from './useRedraw'
 
-const keys = new Set(['Escape', 'Backspace', 'd', 'ArrowRight', 'ArrowLeft'])
+const keys = new Set(['Backspace', 'd', 'ArrowRight', 'ArrowLeft'])
 
 function isRenamingLabel() {
   return (

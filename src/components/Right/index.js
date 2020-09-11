@@ -10,7 +10,10 @@ export default function Right() {
   const { state, boxes, boxNames, dispatch } = useDashboard()
   const needsRedraw = useRef(false)
   const { selectedBox } = state
-  const file = state.files?.[state.fileIndex] || {}
+  const file = state.files?.[state.fileIndex] || {}
+  const labels = [
+    ...new Set(Object.values(state.allBoxesNames).flatMap(Object.values)),
+  ]
 
   useEffect(() => {
     if (!needsRedraw.current) return
@@ -20,9 +23,7 @@ export default function Right() {
 
   return (
     <div className={styles.right}>
-      <p className={styles.title}>
-        {file.name || 'Box'} labels
-      </p>
+      <p className={styles.title}>{file.name || 'Box'} labels</p>
       <div className={styles.content}>
         {boxes.length === 0 ? (
           <i className={styles.notYet}>No boxes yet.</i>
@@ -39,6 +40,7 @@ export default function Right() {
                   className={`${styles.box} ${isActive ? styles.active : ''}`}
                   key={`${box[0]}-${box[1]}`}
                   type="text"
+                  list="labels"
                   onClick={() => {
                     if (isActive) return
                     dispatch({ type: 'select-box', data: realIndex })
@@ -52,6 +54,13 @@ export default function Right() {
                 />
               )
             })
+        )}
+        {labels.length > 0 && (
+          <datalist id="labels">
+            {labels.map((label) => (
+              <option key={label} value={label} />
+            ))}
+          </datalist>
         )}
       </div>
       <p className={styles.title}>Files</p>
