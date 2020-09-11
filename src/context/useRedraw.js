@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react'
+
+import useZoom from './useZoom'
 import { useDashboard } from '.'
 
 const cornerSize = 5
@@ -82,13 +84,18 @@ export default function useRedraw() {
 export function useRedrawOnChangeFile() {
   const { state, boxes, imgRef, canvasRef, ctxRef, dispatch } = useDashboard()
   const redraw = useRedraw()
+  const onZoom = useZoom()
+  const oldIndex = useRef()
   const file = state.files[state.fileIndex]
 
   useEffect(() => {
     if (!file) return
 
-    const handler = () => {
-      dispatch({ type: 'reset-zoom' })
+    const context = canvasRef.current.getContext('2d')
+    const img = new Image()
+
+    function handler() {
+      onZoom(-state.zoom)
       dispatch({
         type: 'set-size',
         data: {
@@ -99,21 +106,21 @@ export function useRedrawOnChangeFile() {
       requestAnimationFrame(redraw)
     }
 
-    const context = canvasRef.current.getContext('2d')
-    const img = new Image()
+    if (oldIndex.current !== state.fileIndex) {
+      img.src = URL.createObjectURL(file)
+      img.onload = handler
+      imgRef.current = img
+      ctxRef.current = context
+    }
 
-    img.src = URL.createObjectURL(file)
-    img.onload = handler
-    imgRef.current = img
-    ctxRef.current = context
-
+    oldIndex.current = state.fileIndex
     window.addEventListener('resize', handler)
 
     return () => {
       URL.revokeObjectURL(img.src)
       window.removeEventListener('resize', handler)
     }
-  }, [file])
+  }, [file, state])
 
   useEffect(() => {
     if (!file || !boxes || boxes.length === 0) return
