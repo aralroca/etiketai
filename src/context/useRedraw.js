@@ -53,7 +53,13 @@ export default function useRedraw() {
     ctx.restore()
 
     // Draw
-    ctx.drawImage(img, 0, 0, width, height)
+    ctx.drawImage(
+      img,
+      canvas.width / 2 - width / 2,
+      canvas.height / 2 - height / 2,
+      width,
+      height
+    )
 
     // Boxes
     boxes.forEach(([startX, startY, mouseX, mouseY], index) => {
@@ -90,7 +96,7 @@ export function useRedrawOnChangeFile() {
           height: window.innerHeight,
         },
       })
-      redraw()
+      requestAnimationFrame(redraw)
     }
 
     const context = canvasRef.current.getContext('2d')
