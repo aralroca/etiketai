@@ -49,11 +49,11 @@ describe('Getting labels', () => {
     expect(res.length).toBe(2)
 
     expect(res[0].filename).toBe('classes.txt')
-    expect(res[0].dataurl).toBe('human\nhorse')
+    expect(res[0].dataurl).toBe('data:text/txt,horse\nhuman')
 
     expect(res[1].filename).toBe('test.txt')
     expect(res[1].dataurl).toBe(
-      'data:text/txt,1 0.297917 0.787037 0.077083 0.273148\n1 0.520833 0.659722 0.122917 0.296296\n1 0.702604 0.709491 0.078125 0.331019\n1 0.882292 0.678241 0.118750 0.337963\n2 0.400521 0.118056 0.065625 0.199074'
+      'data:text/txt,0 0.297917 0.787037 0.077083 0.273148\n0 0.520833 0.659722 0.122917 0.296296\n0 0.702604 0.709491 0.078125 0.331019\n0 0.882292 0.678241 0.118750 0.337963\n1 0.400521 0.118056 0.065625 0.199074'
     )
   })
 })
