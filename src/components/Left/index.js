@@ -21,17 +21,18 @@ export default function Left() {
   const hasBoxes = Object.values(state.allBoxes).flat().length > 0
 
   useEffect(() => {
-    if (!hasBoxes) return
+    if (state.saved || !hasBoxes) return
 
     function unload(e) {
-      const msg = 'Do you really want to close? Changes that you made may not be saved.'
+      const msg =
+        'Do you really want to close? Changes that you made may not be saved.'
       e.returnValue = msg
       return msg
     }
 
     window.addEventListener('beforeunload', unload)
     return () => window.removeEventListener('beforeunload', unload)
-  }, [hasBoxes])
+  }, [state.saved, hasBoxes])
 
   const globalList = [
     {
@@ -168,11 +169,11 @@ function SaveModal() {
     const labels =
       format === 'xml'
         ? await getPascalVocLabels(
-          boxesToDownload,
-          relatedFiles,
-          namesOfBoxes,
-          size
-        )
+            boxesToDownload,
+            relatedFiles,
+            namesOfBoxes,
+            size
+          )
         : await getYoloLabels(boxesToDownload, relatedFiles, namesOfBoxes, size)
 
     labels.forEach(({ dataurl, filename }) => download(dataurl, filename))
