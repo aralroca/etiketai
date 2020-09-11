@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react'
+
+import useZoom from './useZoom'
 import { useDashboard } from '.'
 
 const cornerSize = 5
@@ -53,7 +55,13 @@ export default function useRedraw() {
     ctx.restore()
 
     // Draw
-    ctx.drawImage(img, 0, 0, width, height)
+    ctx.drawImage(
+      img,
+      canvas.width / 2 - width / 2,
+      canvas.height / 2 - height / 2,
+      width,
+      height
+    )
 
     // Boxes
     boxes.forEach(([startX, startY, mouseX, mouseY], index) => {
@@ -76,13 +84,16 @@ export default function useRedraw() {
 export function useRedrawOnChangeFile() {
   const { state, boxes, imgRef, canvasRef, ctxRef, dispatch } = useDashboard()
   const redraw = useRedraw()
+  const onZoom = useZoom()
+  const oldIndex = useRef()
   const file = state.files[state.fileIndex]
+  let img
 
   useEffect(() => {
     if (!file) return
 
-    const handler = () => {
-      dispatch({ type: 'reset-zoom' })
+    function handler() {
+      onZoom(-state.zoom)
       dispatch({
         type: 'set-size',
         data: {
@@ -90,39 +101,30 @@ export function useRedrawOnChangeFile() {
           height: window.innerHeight,
         },
       })
-      redraw()
+      requestAnimationFrame(redraw)
     }
 
-    const context = canvasRef.current.getContext('2d')
-    const img = new Image()
+    if (oldIndex.current !== state.fileIndex) {
+      img = new Image()
+      img.src = URL.createObjectURL(file)
+      img.onload = handler
+      imgRef.current = img
+      ctxRef.current = canvasRef.current.getContext('2d')
+    }
 
-    img.src = URL.createObjectURL(file)
-    img.onload = handler
-    imgRef.current = img
-    ctxRef.current = context
-
+    oldIndex.current = state.fileIndex
     window.addEventListener('resize', handler)
 
     return () => {
-      URL.revokeObjectURL(img.src)
+      if (img) URL.revokeObjectURL(img.src)
       window.removeEventListener('resize', handler)
     }
-  }, [file])
+  }, [file, state])
 
   useEffect(() => {
     if (!file || !boxes || boxes.length === 0) return
     redraw()
   }, [file, boxes])
-}
-
-export function useRedrawOnResize() {
-  const { state, imgRef } = useDashboard()
-  const redraw = useRedraw()
-
-  useEffect(() => {
-    if (!imgRef.current) return
-    redraw()
-  }, [state.size.width])
 }
 
 export function useSelectBox() {

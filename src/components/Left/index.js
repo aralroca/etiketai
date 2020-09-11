@@ -8,6 +8,7 @@ import useZoom from '../../context/useZoom'
 import { useDashboard } from '../../context'
 
 import styles from './styles.module.css'
+import useRedraw from '../../context/useRedraw'
 
 const DELTA = 2
 
@@ -39,7 +40,9 @@ export default function Left() {
       label: 'Open',
       icon: '📂',
       type: 'input[file]',
-      action: (e) => dispatch({ type: 'load', data: e.target.files }),
+      action: (e) =>
+        e.target.files.length > 0 &&
+        dispatch({ type: 'load', data: e.target.files }),
     },
     {
       label: 'Next',
@@ -177,6 +180,7 @@ function SaveModal() {
         : await getYoloLabels(boxesToDownload, relatedFiles, namesOfBoxes, size)
 
     labels.forEach(({ dataurl, filename }) => download(dataurl, filename))
+    dispatch({ type: 'save' })
     close()
   }
 

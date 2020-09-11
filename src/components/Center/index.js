@@ -1,8 +1,4 @@
-import {
-  useRedrawOnChangeFile,
-  useRedrawOnResize,
-  useSelectBox,
-} from '../../context/useRedraw'
+import { useRedrawOnChangeFile, useSelectBox } from '../../context/useRedraw'
 import useKeyDownControls from '../../context/useKeyDownControls'
 import useZoom from '../../context/useZoom'
 import { useDashboard } from '../../context'
@@ -21,7 +17,6 @@ export default function Center() {
   const selectBox = useSelectBox()
 
   useRedrawOnChangeFile()
-  useRedrawOnResize()
   useKeyDownControls()
 
   function onMouseWheel(e) {
