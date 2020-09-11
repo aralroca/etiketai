@@ -153,7 +153,7 @@ function SaveModal() {
 
     const labels = format === 'xml'
       ? await getPascalVocLabels(boxesToDownload, relatedFiles, namesOfBoxes, size)
-      : getYoloLabels(boxesToDownload, relatedFiles, namesOfBoxes, size)
+      : await getYoloLabels(boxesToDownload, relatedFiles, namesOfBoxes, size)
 
     labels.forEach(({ dataurl, filename }) => download(dataurl, filename))
     close()
