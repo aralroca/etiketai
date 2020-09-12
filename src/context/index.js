@@ -13,7 +13,7 @@ const initialState = {
 
 function reducer(state, action) {
   const boxes = (state.allBoxes[state.fileIndex] || []).slice()
-  const boxNames = state.allBoxesNames[state.fileIndex] || {}
+  const boxNames = { ...state.allBoxesNames[state.fileIndex] || {} }
 
   function updateBoxes(b) {
     return {
@@ -75,13 +75,17 @@ function reducer(state, action) {
           )
         ),
       }
-    case 'remove-box':
+    case 'remove-box': {
+      delete boxNames[state.selectedBox]
+
       return {
         ...state,
         saved: false,
         selectedBox: undefined,
         allBoxes: updateBoxes(boxes.filter((_, i) => i != state.selectedBox)),
+        allBoxesNames: updateBoxNames(boxNames)
       }
+    }
     case 'select-box':
       return { ...state, selectedBox: action.data }
     case 'rename-label':
