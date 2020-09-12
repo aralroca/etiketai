@@ -2,13 +2,13 @@ import { useEffect } from 'react'
 
 import Modal from '../Modal'
 import download from '../../utils/download'
+import extractFilesLabels from '../../utils/extractFilesLabels'
 import getPascalVocLabels from '../../utils/getPascalVocLabels'
 import getYoloLabels from '../../utils/getYoloLabels'
 import useZoom from '../../context/useZoom'
 import { useDashboard } from '../../context'
 
 import styles from './styles.module.css'
-import useRedraw from '../../context/useRedraw'
 
 const DELTA = 2
 
@@ -40,9 +40,12 @@ export default function Left() {
       label: 'Open',
       icon: '📂',
       type: 'input[file]',
-      action: (e) =>
+      action: async (e) =>
         e.target.files.length > 0 &&
-        dispatch({ type: 'load', data: e.target.files }),
+        dispatch({
+          type: 'load',
+          data: await extractFilesLabels([...e.target.files]),
+        }),
     },
     {
       label: 'Next',
@@ -105,7 +108,12 @@ function Item({ label, icon, onAction, type, disabled }) {
   const onClick = type === 'input[file]' || disabled ? undefined : onAction
   const disabledClass = disabled ? styles.disabled : ''
   const inputFileElement = type === 'input[file]' && (
-    <input accept="image/*" multiple onChange={onAction} type="file" />
+    <input
+      accept="image/*, .txt, .xml"
+      multiple
+      onChange={onAction}
+      type="file"
+    />
   )
 
   return (
