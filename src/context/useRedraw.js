@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 
+import getCanvasSize from '../utils/getCanvasSize'
 import useZoom from './useZoom'
 import { useDashboard } from '.'
 
@@ -96,10 +97,7 @@ export function useRedrawOnChangeFile() {
       onZoom(-state.zoom)
       dispatch({
         type: 'set-size',
-        data: {
-          width: window.innerWidth - 420,
-          height: window.innerHeight,
-        },
+        data: getCanvasSize(),
       })
       requestAnimationFrame(redraw)
     }

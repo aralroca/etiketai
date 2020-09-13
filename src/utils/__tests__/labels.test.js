@@ -1,9 +1,17 @@
+import extractLabelsFromTxtFiles from '../extractLabelsFromTxtFiles'
+import extractLabelsFromXmlFiles from '../extractLabelsFromXmlFiles'
 import getPascalVocLabels from '../getPascalVocLabels'
 import getYoloLabels from '../getYoloLabels'
-import { extractLabelsFromTxtFiles, extractLabelsFromXmlFiles } from '../extractFilesLabels'
 
 jest.mock('../getImagesResolutions', () => () => {
   return [{ w: 960, h: 432 }]
+})
+
+jest.mock('../getCanvasSize', () => () => {
+  return {
+    width: 703,
+    height: 957,
+  }
 })
 
 const input = [
@@ -26,10 +34,6 @@ const input = [
       4: 'human',
     },
   ],
-  {
-    width: 703,
-    height: 957,
-  },
 ]
 
 describe('labels', () => {
@@ -77,33 +81,41 @@ describe('labels', () => {
       expectedBoxNames = {
         0: { 0: 'Horse', 1: 'Horse', 2: 'Horse', 3: 'Horse', 4: 'Head' },
       }
-      inputXml = {
-        images: images,
-        xmls: [{ name: 'test.xml' }],
-        xmlsContent: [
+      inputXml = [
+        images,
+        [{ name: 'test.xml' }],
+        [
           '<annotation><filename>test.jpg</filename><source><database>Unknown</database></source><size><width>960</width><height>432</height><depth>3</depth></size><segmented>0</segmented><object><name>Horse</name><pose>Unspecified</pose><truncated>0</truncated><difficult>0</difficult><bndbox><xmin>253</xmin><ymin>272</ymin><xmax>334</xmax><ymax>414</ymax></bndbox></object><object><name>Horse</name><pose>Unspecified</pose><truncated>0</truncated><difficult>0</difficult><bndbox><xmin>464</xmin><ymin>219</ymin><xmax>542</xmax><ymax>356</ymax></bndbox></object><object><name>Horse</name><pose>Unspecified</pose><truncated>0</truncated><difficult>0</difficult><bndbox><xmin>641</xmin><ymin>230</ymin><xmax>720</xmax><ymax>388</ymax></bndbox></object><object><name>Horse</name><pose>Unspecified</pose><truncated>0</truncated><difficult>0</difficult><bndbox><xmin>784</xmin><ymin>201</ymin><xmax>883</xmax><ymax>359</ymax></bndbox></object><object><name>Head</name><pose>Unspecified</pose><truncated>0</truncated><difficult>0</difficult><bndbox><xmin>425</xmin><ymin>88</ymin><xmax>352</xmax><ymax>2</ymax></bndbox></object></annotation>',
         ],
-      }
-      inputTxt = {
-        images: images,
-        txts: [{ name: 'test.txt' }, { name: 'classes.txt' }],
-        txtsContent: [
+      ]
+      inputTxt = [
+        images,
+        [{ name: 'test.txt' }, { name: 'classes.txt' }],
+        [
           '0 0.305729 0.849537 0.084375 0.328704\n0 0.523958 0.722222 0.081250 0.319444\n0 0.708854 0.770833 0.082292 0.365741\n0 0.868229 0.704861 0.103125 0.368056\n1 0.404688 0.160880 0.076042 0.201389',
           'Horse\nHead',
         ],
-      }
+      ]
     })
 
     test('extractLabelsFromTxtFiles should return a list of boxes and boxesNames', async () => {
-      const { boxes, boxesNames } = extractLabelsFromTxtFiles(inputTxt)
+      const { boxes, boxesNames } = await extractLabelsFromTxtFiles(...inputTxt)
+      expect(boxesNames).toStrictEqual(expectedBoxNames)
+      expect(boxes).toStrictEqual(expectedBoxes)
+    })
+
+    test('extractLabelsFromXmlFiles should return a list of boxes and boxesNames', async () => {
+      const { boxes, boxesNames } = extractLabelsFromXmlFiles(...inputXml)
       expect(boxes).toStrictEqual(expectedBoxes)
       expect(boxesNames).toStrictEqual(expectedBoxNames)
     })
 
-    test('extractLabelsFromXmlFiles should return a list of boxes and boxesNames', async () => {
-      const { boxes, boxesNames } = extractLabelsFromXmlFiles(inputXml)
-      expect(boxes).toStrictEqual(expectedBoxes)
-      expect(boxesNames).toStrictEqual(expectedBoxNames)
+    test('extractLabelsFromTxtFiles should return void when classes.txt are not', async () => {
+      inputTxt[1] = [inputTxt[1][0]]
+      inputTxt[2] = [inputTxt[2][0]]
+      const { boxes, boxesNames } = await extractLabelsFromTxtFiles(...inputTxt)
+      expect(boxes).toStrictEqual({})
+      expect(boxesNames).toStrictEqual({})
     })
   })
 })

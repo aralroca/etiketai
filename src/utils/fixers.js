@@ -1,4 +1,7 @@
-export default function fixers({ w, h }, canvasSize) {
+import getCanvasSize from './getCanvasSize'
+
+export default function fixers({ w, h }) {
+  const canvasSize = getCanvasSize()
   const horizontal = w > h
   let realW = horizontal
     ? parseInt(canvasSize.width, 10)
@@ -13,5 +16,10 @@ export default function fixers({ w, h }, canvasSize) {
   const fixH = (y) =>
     parseInt((y * h) / realH + realH / 2 - canvasSize.height / 2, 10)
 
-  return { fixW, fixH }
+  const unfixW = (u) =>
+    parseInt(((u + canvasSize.width / 2 - realW / 2) * realW) / w, 10)
+  const unfixH = (u) =>
+    parseInt(((u + canvasSize.height / 2 - realH / 2) * realH) / h, 10)
+
+  return { fixW, fixH, unfixW, unfixH }
 }

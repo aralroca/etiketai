@@ -1,3 +1,6 @@
+import extractLabelsFromTxtFiles from './extractLabelsFromTxtFiles'
+import extractLabelsFromXmlFiles from './extractLabelsFromXmlFiles'
+
 export default async function extractFilesLabels(files) {
   let images = []
   let txts = []
@@ -21,7 +24,7 @@ export default async function extractFilesLabels(files) {
     }
   }
 
-  const fromTxt = extractLabelsFromTxtFiles(images, txts, txtsContent)
+  const fromTxt = await extractLabelsFromTxtFiles(images, txts, txtsContent)
   const fromXml = extractLabelsFromXmlFiles(images, xmls, xmlsContent)
 
   return {
@@ -39,18 +42,4 @@ export async function extractFileContent(file) {
     reader.onerror = rej
     reader.readAsText(file)
   })
-}
-
-export function extractLabelsFromTxtFiles(images, txts, txtsContent) {
-  return {
-    boxes: {},
-    boxesNames: {},
-  }
-}
-
-export function extractLabelsFromXmlFiles(images, xmls, xmlsContent) {
-  return {
-    boxes: {},
-    boxesNames: {},
-  }
 }
