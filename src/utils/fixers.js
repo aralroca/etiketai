@@ -17,9 +17,9 @@ export default function fixers({ w, h }) {
     parseInt((y * h) / realH + realH / 2 - canvasSize.height / 2, 10)
 
   const unfixW = (u) =>
-    parseInt(((u + canvasSize.width / 2 - realW / 2) * realW) / w, 10)
+    parseInt(-((realW * (-canvasSize.width + realW - 2 * u)) / (2 * w)), 10)
   const unfixH = (u) =>
-    parseInt(((u + canvasSize.height / 2 - realH / 2) * realH) / h, 10)
+    parseInt(-((realH * (-canvasSize.height + realH - 2 * u)) / (2 * h)), 10)
 
   return { fixW, fixH, unfixW, unfixH }
 }
