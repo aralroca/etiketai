@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import useZoom from './useZoom'
 import { useDashboard } from '.'
@@ -81,18 +81,21 @@ export default function useRedraw() {
   return redraw
 }
 
-export function useRedrawOnChangeFile() {
+export function useLoadImage() {
   const { state, boxes, imgRef, canvasRef, ctxRef, dispatch } = useDashboard()
   const redraw = useRedraw()
   const onZoom = useZoom()
   const oldIndex = useRef()
+  const [imgRes, setImgRes] = useState()
   const file = state.files[state.fileIndex]
-  let img
 
   useEffect(() => {
+    let img
+
     if (!file) return
 
-    function handler() {
+    const handler = () => {
+      if (img) setImgRes({ w: img.width, h: img.height })
       onZoom(-state.zoom)
       dispatch({
         type: 'set-size',
@@ -125,6 +128,8 @@ export function useRedrawOnChangeFile() {
     if (!file || !boxes || boxes.length === 0) return
     redraw()
   }, [file, boxes])
+
+  return imgRes
 }
 
 export function useSelectBox() {

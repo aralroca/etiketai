@@ -1,7 +1,11 @@
-import { useRedrawOnChangeFile, useSelectBox } from '../../context/useRedraw'
+import { useState } from 'react'
+import { useLoadImage, useSelectBox } from '../../context/useRedraw'
+import fixers from '../../utils/fixers'
 import useKeyDownControls from '../../context/useKeyDownControls'
 import useZoom from '../../context/useZoom'
 import { useDashboard } from '../../context'
+
+import styles from './styles.module.css'
 
 let startX
 let startY
@@ -11,12 +15,15 @@ let movingBox
 let resizing
 
 export default function Center() {
+  const [xy, setXY] = useState()
   const { state, boxes, canvasRef, dispatch } = useDashboard()
   const onZoom = useZoom()
   const file = state.files[state.fileIndex]
   const selectBox = useSelectBox()
+  const imgRes = useLoadImage()
+  const zoom = Math.pow(1.1, state.zoom)
+  const { fixW, fixH, realW, realH } = fixers(imgRes, state.size)
 
-  useRedrawOnChangeFile()
   useKeyDownControls()
 
   function onMouseWheel(e) {
@@ -30,8 +37,22 @@ export default function Center() {
     const { selected, oppositeCorner } = selectBox(e, true)
     const [x, y] = oppositeCorner || []
 
-    startX = x || parseInt(e.clientX - left, 10)
-    startY = y || parseInt(e.clientY - top, 10)
+    startX =
+      x ||
+      Math.round(
+        (((e.clientX - left - (state.size.width / 2 - (realW * zoom) / 2)) /
+          zoom) *
+          imgRes.w) /
+          realW
+      )
+    startY =
+      y ||
+      Math.round(
+        (((e.clientY - top - (state.size.height / 2 - (realH * zoom) / 2)) /
+          zoom) *
+          imgRes.h) /
+          realH
+      )
     isDown = true
     newBox = !oppositeCorner
     movingBox = oppositeCorner ? undefined : selected
@@ -41,6 +62,22 @@ export default function Center() {
   function onMouseMove(e) {
     e.preventDefault()
     e.stopPropagation()
+
+    const { left, top } = canvasRef.current.getBoundingClientRect()
+    const mouseX = Math.round(
+      (((e.clientX - left - (state.size.width / 2 - (realW * zoom) / 2)) /
+        zoom) *
+        imgRes.w) /
+        realW
+    )
+    const mouseY = Math.round(
+      (((e.clientY - top - (state.size.height / 2 - (realH * zoom) / 2)) /
+        zoom) *
+        imgRes.h) /
+        realH
+    )
+
+    setXY([mouseX, mouseY])
 
     if (!isDown) {
       const { selected, oppositeCorner } = selectBox(e)
@@ -62,9 +99,6 @@ export default function Center() {
       return
     }
 
-    const { left, top } = canvasRef.current.getBoundingClientRect()
-    const mouseX = parseInt(e.clientX - left, 10)
-    const mouseY = parseInt(e.clientY - top, 10)
     const data = [startX, startY, mouseX, mouseY]
 
     if (startX === mouseX || mouseY === startY) return
@@ -98,15 +132,18 @@ export default function Center() {
   if (!file) return null
 
   return (
-    <canvas
-      width={state.size.width}
-      height={state.size.height}
-      ref={canvasRef}
-      onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}
-      onMouseOut={stopDragging}
-      onMouseUp={stopDragging}
-      onMouseWheel={onMouseWheel}
-    />
+    <div className={styles.canvasWrapper}>
+      <canvas
+        width={state.size.width}
+        height={state.size.height}
+        ref={canvasRef}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseOut={stopDragging}
+        onMouseUp={stopDragging}
+        onMouseWheel={onMouseWheel}
+      />
+      {xy && <div className={styles.info}>{`X: ${xy[0]} - Y: ${xy[1]}`}</div>}
+    </div>
   )
 }

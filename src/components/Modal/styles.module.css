@@ -1,5 +1,6 @@
 .dialogWrapper {
   width: 100vw;
+  z-index: 2;
   position: absolute;
   top: 0;
   left: 0;
@@ -22,7 +23,8 @@
   justify-content: space-between;
 }
 
-.dialogWrapper .content, .dialogWrapper header {
+.dialogWrapper .content,
+.dialogWrapper header {
   padding: 10px;
 }
 
