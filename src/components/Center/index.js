@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { useLoadImage, useSelectBox } from '../../context/useRedraw'
-import fixers from '../../utils/fixers'
+
+import getImgSizeOnCanvas from '../../utils/getImgSizeOnCanvas'
 import useKeyDownControls from '../../context/useKeyDownControls'
 import useZoom from '../../context/useZoom'
 import { useDashboard } from '../../context'
+import { useLoadImage, useSelectBox } from '../../context/useRedraw'
 
 import styles from './styles.module.css'
 
@@ -22,7 +23,11 @@ export default function Center() {
   const selectBox = useSelectBox()
   const imgRes = useLoadImage()
   const zoom = Math.pow(1.1, state.zoom)
-  const { fixW, fixH, realW, realH } = fixers(imgRes, state.size)
+  const { originalW, originalH, wZoom, hZoom } = getImgSizeOnCanvas(
+    imgRes,
+    state.size,
+    zoom
+  )
 
   useKeyDownControls()
 
@@ -40,18 +45,16 @@ export default function Center() {
     startX =
       x ||
       Math.round(
-        (((e.clientX - left - (state.size.width / 2 - (realW * zoom) / 2)) /
-          zoom) *
+        (((e.clientX - left - (state.size.width / 2 - wZoom / 2)) / zoom) *
           imgRes.w) /
-          realW
+          originalW
       )
     startY =
       y ||
       Math.round(
-        (((e.clientY - top - (state.size.height / 2 - (realH * zoom) / 2)) /
-          zoom) *
+        (((e.clientY - top - (state.size.height / 2 - hZoom / 2)) / zoom) *
           imgRes.h) /
-          realH
+          originalH
       )
     isDown = true
     newBox = !oppositeCorner
@@ -65,16 +68,14 @@ export default function Center() {
 
     const { left, top } = canvasRef.current.getBoundingClientRect()
     const mouseX = Math.round(
-      (((e.clientX - left - (state.size.width / 2 - (realW * zoom) / 2)) /
-        zoom) *
+      (((e.clientX - left - (state.size.width / 2 - wZoom / 2)) / zoom) *
         imgRes.w) /
-        realW
+        originalW
     )
     const mouseY = Math.round(
-      (((e.clientY - top - (state.size.height / 2 - (realH * zoom) / 2)) /
-        zoom) *
+      (((e.clientY - top - (state.size.height / 2 - hZoom / 2)) / zoom) *
         imgRes.h) /
-        realH
+        originalH
     )
 
     setXY([mouseX, mouseY])
