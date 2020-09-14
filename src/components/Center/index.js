@@ -31,6 +31,21 @@ export default function Center() {
 
   useKeyDownControls()
 
+  function getXY(e) {
+    const { left, top } = canvasRef.current.getBoundingClientRect()
+    const x = Math.round(
+      (((e.clientX - left - (state.size.width / 2 - wZoom / 2)) / zoom) *
+        imgRes.w) /
+      originalW
+    )
+    const y = Math.round(
+      (((e.clientY - top - (state.size.height / 2 - hZoom / 2)) / zoom) *
+        imgRes.h) /
+      originalH
+    )
+    return [x, y]
+  }
+
   function onMouseWheel(e) {
     e.preventDefault()
     onZoom(e.wheelDelta ? e.wheelDelta / 40 : e.detail ? -e.detail : 0)
@@ -38,24 +53,12 @@ export default function Center() {
   }
 
   function onMouseDown(e) {
-    const { left, top } = canvasRef.current.getBoundingClientRect()
     const { selected, oppositeCorner } = selectBox(e, true)
     const [x, y] = oppositeCorner || []
+    const newPoint = getXY(e)
 
-    startX =
-      x ||
-      Math.round(
-        (((e.clientX - left - (state.size.width / 2 - wZoom / 2)) / zoom) *
-          imgRes.w) /
-          originalW
-      )
-    startY =
-      y ||
-      Math.round(
-        (((e.clientY - top - (state.size.height / 2 - hZoom / 2)) / zoom) *
-          imgRes.h) /
-          originalH
-      )
+    startX = x || newPoint[0]
+    startY = y || newPoint[1]
     isDown = true
     newBox = !oppositeCorner
     movingBox = oppositeCorner ? undefined : selected
@@ -66,17 +69,7 @@ export default function Center() {
     e.preventDefault()
     e.stopPropagation()
 
-    const { left, top } = canvasRef.current.getBoundingClientRect()
-    const mouseX = Math.round(
-      (((e.clientX - left - (state.size.width / 2 - wZoom / 2)) / zoom) *
-        imgRes.w) /
-        originalW
-    )
-    const mouseY = Math.round(
-      (((e.clientY - top - (state.size.height / 2 - hZoom / 2)) / zoom) *
-        imgRes.h) /
-        originalH
-    )
+    const [mouseX, mouseY] = getXY(e)
 
     setXY([mouseX, mouseY])
 
@@ -91,7 +84,7 @@ export default function Center() {
         const nesw = (top && !left) || (!top && left)
         canvasRef.current.style = `cursor: ${
           nesw ? 'nesw-resize' : 'nwse-resize'
-        };`
+          };`
       } else if (selected > -1) {
         canvasRef.current.style = 'cursor: move;'
       } else {
