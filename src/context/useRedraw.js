@@ -138,7 +138,7 @@ export function useLoadImage() {
 }
 
 export function useSelectBox() {
-  const { boxes, dispatch, canvasRef } = useDashboard()
+  const { boxes, dispatch } = useDashboard()
   const redraw = useRedraw()
   const needsRedraw = useRef(false)
 
@@ -149,10 +149,7 @@ export function useSelectBox() {
    * corner as the origin and where we are clicking as the end, so we can then
    * resize the rectangles.
    */
-  function selectBox(e, autoselect = false) {
-    const { left, top } = canvasRef.current.getBoundingClientRect()
-    const x = e.clientX - left
-    const y = e.clientY - top
+  function selectBox(x, y, autoselect = false) {
     let selected, oppositeCorner
     const padding = cornerSize + 2 / 2
 

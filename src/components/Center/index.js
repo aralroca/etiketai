@@ -36,12 +36,12 @@ export default function Center() {
     const x = Math.round(
       (((e.clientX - left - (state.size.width / 2 - wZoom / 2)) / zoom) *
         imgRes.w) /
-        originalW
+      originalW
     )
     const y = Math.round(
       (((e.clientY - top - (state.size.height / 2 - hZoom / 2)) / zoom) *
         imgRes.h) /
-        originalH
+      originalH
     )
     return [x, y]
   }
@@ -53,12 +53,16 @@ export default function Center() {
   }
 
   function onMouseDown(e) {
-    const { selected, oppositeCorner } = selectBox(e, true)
-    const [x, y] = oppositeCorner || []
-    const newPoint = getXY(e)
+    ;[startX, startY] = getXY(e)
 
-    startX = x || newPoint[0]
-    startY = y || newPoint[1]
+    const { selected, oppositeCorner } = selectBox(startX, startY, true)
+    const [x, y] = oppositeCorner || []
+
+    if (oppositeCorner) {
+      startX = x
+      startY = y
+    }
+
     isDown = true
     newBox = !oppositeCorner
     movingBox = oppositeCorner ? undefined : selected
@@ -74,7 +78,7 @@ export default function Center() {
     setXY([mouseX, mouseY])
 
     if (!isDown) {
-      const { selected, oppositeCorner } = selectBox(e)
+      const { selected, oppositeCorner } = selectBox(mouseX, mouseY)
 
       if (oppositeCorner) {
         const [w, h] = oppositeCorner
@@ -84,7 +88,7 @@ export default function Center() {
         const nesw = (top && !left) || (!top && left)
         canvasRef.current.style = `cursor: ${
           nesw ? 'nesw-resize' : 'nwse-resize'
-        };`
+          };`
       } else if (selected > -1) {
         canvasRef.current.style = 'cursor: move;'
       } else {
