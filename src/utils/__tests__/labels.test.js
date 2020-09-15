@@ -104,10 +104,25 @@ describe('labels', () => {
       expect(boxes).toStrictEqual(expectedBoxes)
     })
 
+    test('extractLabelsFromTxtFiles should return a list of boxes and boxesNames with different startIndex', async () => {
+      const { boxes, boxesNames } = await extractLabelsFromTxtFiles(
+        ...inputTxt,
+        10
+      )
+      expect(boxes).toStrictEqual({ 10: expectedBoxes[0] })
+      expect(boxesNames).toStrictEqual({ 10: expectedBoxNames[0] })
+    })
+
     test('extractLabelsFromXmlFiles should return a list of boxes and boxesNames', async () => {
       const { boxes, boxesNames } = extractLabelsFromXmlFiles(...inputXml)
       expect(boxes).toStrictEqual(expectedBoxes)
       expect(boxesNames).toStrictEqual(expectedBoxNames)
+    })
+
+    test('extractLabelsFromXmlFiles should return a list of boxes and boxesNames with different startIndex', async () => {
+      const { boxes, boxesNames } = extractLabelsFromXmlFiles(...inputXml, 10)
+      expect(boxes).toStrictEqual({ 10: expectedBoxes[0] })
+      expect(boxesNames).toStrictEqual({ 10: expectedBoxNames[0] })
     })
 
     test('extractLabelsFromTxtFiles should return void when classes.txt are not', async () => {

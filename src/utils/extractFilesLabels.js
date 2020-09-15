@@ -1,7 +1,7 @@
 import extractLabelsFromTxtFiles from './extractLabelsFromTxtFiles'
 import extractLabelsFromXmlFiles from './extractLabelsFromXmlFiles'
 
-export default async function extractFilesLabels(files) {
+export default async function extractFilesLabels(files, startIndex) {
   let images = []
   let txts = []
   let txtsContent = []
@@ -24,8 +24,18 @@ export default async function extractFilesLabels(files) {
     }
   }
 
-  const fromTxt = await extractLabelsFromTxtFiles(images, txts, txtsContent)
-  const fromXml = extractLabelsFromXmlFiles(images, xmls, xmlsContent)
+  const fromTxt = await extractLabelsFromTxtFiles(
+    images,
+    txts,
+    txtsContent,
+    startIndex
+  )
+  const fromXml = extractLabelsFromXmlFiles(
+    images,
+    xmls,
+    xmlsContent,
+    fromTxt.lastIndex
+  )
 
   return {
     images,

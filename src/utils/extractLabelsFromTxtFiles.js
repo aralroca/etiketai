@@ -3,15 +3,17 @@ import getImagesResolutions from './getImagesResolutions'
 export default async function extractLabelsFromTxtFiles(
   images,
   txts,
-  txtsContent
+  txtsContent,
+  startIndex = 0
 ) {
+  let currentIndex = startIndex
   const hasBoxes = (b) =>
     b.match(/^(\d* (\d|\.| |\n)*)/g) && b.split('\n')?.[0]?.length > 36
   const boxes = {}
   const boxesNames = {}
   const classes = txtsContent.find((data) => !hasBoxes(data))
 
-  if (!classes) return { boxes, boxesNames }
+  if (!classes) return { boxes, boxesNames, lastIndex: currentIndex }
 
   const labels = classes.split('\n').map((t) => t.trim())
   const indexes = txts.reduce((o, im, i) => {
@@ -28,8 +30,9 @@ export default async function extractLabelsFromTxtFiles(
 
     const coordinates = txtsContent[i].split('\n').filter((v) => v)
     const [{ w, h }] = await getImagesResolutions([image])
+    currentIndex = imgIndx + startIndex
 
-    boxes[imgIndx] = coordinates.map((c) => {
+    boxes[currentIndex] = coordinates.map((c) => {
       const [, bx, by, bw, bh] = c.trim().split(' ').map(parseFloat)
 
       return [
@@ -40,7 +43,7 @@ export default async function extractLabelsFromTxtFiles(
       ]
     })
 
-    boxesNames[imgIndx] = coordinates.reduce(
+    boxesNames[currentIndex] = coordinates.reduce(
       (o, c, idx) => ({
         [idx]: labels[parseInt(c.trim()[0])],
         ...o,
@@ -49,5 +52,5 @@ export default async function extractLabelsFromTxtFiles(
     )
   }
 
-  return { boxes, boxesNames }
+  return { boxes, boxesNames, lastIndex: currentIndex }
 }

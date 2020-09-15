@@ -44,7 +44,10 @@ export default function Left() {
         e.target.files.length > 0 &&
         dispatch({
           type: 'load',
-          data: await extractFilesLabels([...e.target.files]),
+          data: await extractFilesLabels(
+            [...e.target.files],
+            state.files.length
+          ),
         }),
     },
     {

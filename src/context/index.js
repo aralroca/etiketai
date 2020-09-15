@@ -110,8 +110,8 @@ function reducer(state, action) {
         ...state,
         files: [...state.files, ...images],
         fileIndex: images.length ? state.files.length : state.fileIndex,
-        allBoxes,
-        allBoxesNames,
+        allBoxes: { ...state.allBoxes, ...allBoxes },
+        allBoxesNames: { ...state.allBoxesNames, ...allBoxesNames },
       }
     }
     case 'next':

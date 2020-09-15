@@ -3,9 +3,15 @@ import chunk from './chunk'
 const labelNameRgx = /<name>([^<]*)<\//g
 const coordsRgx = /<(xmax|xmin|ymax|ymin)>([^<]*)<\//g
 
-export default function extractLabelsFromXmlFiles(images, xmls, xmlsContent) {
+export default function extractLabelsFromXmlFiles(
+  images,
+  xmls,
+  xmlsContent,
+  startIndex = 0
+) {
   const boxes = {}
   const boxesNames = {}
+  let currentIndex = startIndex
 
   const indexes = xmls.reduce((o, im, i) => {
     o[im.name.split('.')[0]] = i
@@ -23,18 +29,19 @@ export default function extractLabelsFromXmlFiles(images, xmls, xmlsContent) {
       parseInt(c.replace(/[^\d]*/g, ''))
     )
 
-    boxes[imgIndx] = chunk(coordinates, 4)
-    boxesNames[imgIndx] = (xmlsContent[i].match(labelNameRgx) || []).reduce(
-      (o, c, indx) => {
-        o[indx] = c.replace('<name>', '').replace('</', '')
-        return o
-      },
-      {}
-    )
+    currentIndex = imgIndx + startIndex
+    boxes[currentIndex] = chunk(coordinates, 4)
+    boxesNames[currentIndex] = (
+      xmlsContent[i].match(labelNameRgx) || []
+    ).reduce((o, c, indx) => {
+      o[indx] = c.replace('<name>', '').replace('</', '')
+      return o
+    }, {})
   }
 
   return {
     boxes,
     boxesNames,
+    lastIndex: currentIndex,
   }
 }
