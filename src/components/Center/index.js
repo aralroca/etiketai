@@ -1,7 +1,12 @@
-import { useRedrawOnChangeFile, useSelectBox } from '../../context/useRedraw'
+import { useState } from 'react'
+
+import getImgSizeOnCanvas from '../../utils/getImgSizeOnCanvas'
 import useKeyDownControls from '../../context/useKeyDownControls'
 import useZoom from '../../context/useZoom'
 import { useDashboard } from '../../context'
+import { useLoadImage, useSelectBox } from '../../context/useRedraw'
+
+import styles from './styles.module.css'
 
 let startX
 let startY
@@ -11,13 +16,35 @@ let movingBox
 let resizing
 
 export default function Center() {
+  const [xy, setXY] = useState()
   const { state, boxes, canvasRef, dispatch } = useDashboard()
   const onZoom = useZoom()
   const file = state.files[state.fileIndex]
   const selectBox = useSelectBox()
+  const imgRes = useLoadImage()
+  const zoom = Math.pow(1.1, state.zoom)
+  const [originalW, originalH, wZoom, hZoom] = getImgSizeOnCanvas(
+    imgRes,
+    state.size,
+    zoom
+  )
 
-  useRedrawOnChangeFile()
   useKeyDownControls()
+
+  function getXY(e) {
+    const { left, top } = canvasRef.current.getBoundingClientRect()
+    const x = Math.round(
+      (((e.clientX - left - (state.size.width / 2 - wZoom / 2)) / zoom) *
+        imgRes.w) /
+      originalW
+    )
+    const y = Math.round(
+      (((e.clientY - top - (state.size.height / 2 - hZoom / 2)) / zoom) *
+        imgRes.h) /
+      originalH
+    )
+    return [x, y]
+  }
 
   function onMouseWheel(e) {
     e.preventDefault()
@@ -26,12 +53,16 @@ export default function Center() {
   }
 
   function onMouseDown(e) {
-    const { left, top } = canvasRef.current.getBoundingClientRect()
-    const { selected, oppositeCorner } = selectBox(e, true)
+    ;[startX, startY] = getXY(e)
+
+    const { selected, oppositeCorner } = selectBox(startX, startY, true)
     const [x, y] = oppositeCorner || []
 
-    startX = x || parseInt(e.clientX - left, 10)
-    startY = y || parseInt(e.clientY - top, 10)
+    if (oppositeCorner) {
+      startX = x
+      startY = y
+    }
+
     isDown = true
     newBox = !oppositeCorner
     movingBox = oppositeCorner ? undefined : selected
@@ -42,8 +73,12 @@ export default function Center() {
     e.preventDefault()
     e.stopPropagation()
 
+    const [mouseX, mouseY] = getXY(e)
+
+    setXY([mouseX, mouseY])
+
     if (!isDown) {
-      const { selected, oppositeCorner } = selectBox(e)
+      const { selected, oppositeCorner } = selectBox(mouseX, mouseY)
 
       if (oppositeCorner) {
         const [w, h] = oppositeCorner
@@ -53,7 +88,7 @@ export default function Center() {
         const nesw = (top && !left) || (!top && left)
         canvasRef.current.style = `cursor: ${
           nesw ? 'nesw-resize' : 'nwse-resize'
-        };`
+          };`
       } else if (selected > -1) {
         canvasRef.current.style = 'cursor: move;'
       } else {
@@ -62,9 +97,6 @@ export default function Center() {
       return
     }
 
-    const { left, top } = canvasRef.current.getBoundingClientRect()
-    const mouseX = parseInt(e.clientX - left, 10)
-    const mouseY = parseInt(e.clientY - top, 10)
     const data = [startX, startY, mouseX, mouseY]
 
     if (startX === mouseX || mouseY === startY) return
@@ -98,15 +130,18 @@ export default function Center() {
   if (!file) return null
 
   return (
-    <canvas
-      width={state.size.width}
-      height={state.size.height}
-      ref={canvasRef}
-      onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}
-      onMouseOut={stopDragging}
-      onMouseUp={stopDragging}
-      onMouseWheel={onMouseWheel}
-    />
+    <div className={styles.canvasWrapper}>
+      <canvas
+        width={state.size.width}
+        height={state.size.height}
+        ref={canvasRef}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseOut={stopDragging}
+        onMouseUp={stopDragging}
+        onMouseWheel={onMouseWheel}
+      />
+      {xy && <div className={styles.info}>{`X: ${xy[0]} - Y: ${xy[1]}`}</div>}
+    </div>
   )
 }

@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
+import getPointSizeOnCanvas from '../utils/getPointSizeOnCanvas'
 import useZoom from './useZoom'
 import { useDashboard } from '.'
 
@@ -65,34 +66,41 @@ export default function useRedraw() {
 
     // Boxes
     boxes.forEach(([startX, startY, mouseX, mouseY], index) => {
+      const imgSize = { w: img.width, h: img.height }
+      const [x, y] = getPointSizeOnCanvas(startX, startY, imgSize, state.size)
+      const [mx, my] = getPointSizeOnCanvas(mouseX, mouseY, imgSize, state.size)
+
       const color = index === state.selectedBox ? '#64b5f6' : '#aed581'
       ctx.beginPath()
       ctx.fillStyle = color + '44' //opacity
       ctx.lineWidth = 2
-      ctx.fillRect(startX, startY, mouseX - startX, mouseY - startY)
+      ctx.fillRect(x, y, mx - x, my - y)
       ctx.fillStyle = color
-      arc(ctx, startX, startY)
-      arc(ctx, startX + (mouseX - startX), startY)
-      arc(ctx, startX, startY + (mouseY - startY))
-      arc(ctx, mouseX, mouseY)
+      arc(ctx, x, y)
+      arc(ctx, x + (mx - x), y)
+      arc(ctx, x, y + (my - y))
+      arc(ctx, mx, my)
     })
   }
 
   return redraw
 }
 
-export function useRedrawOnChangeFile() {
+export function useLoadImage() {
   const { state, boxes, imgRef, canvasRef, ctxRef, dispatch } = useDashboard()
   const redraw = useRedraw()
   const onZoom = useZoom()
   const oldIndex = useRef()
+  const [imgRes, setImgRes] = useState()
   const file = state.files[state.fileIndex]
-  let img
 
   useEffect(() => {
+    let img
+
     if (!file) return
 
-    function handler() {
+    const handler = () => {
+      if (img) setImgRes({ w: img.width, h: img.height })
       onZoom(-state.zoom)
       dispatch({
         type: 'set-size',
@@ -125,10 +133,12 @@ export function useRedrawOnChangeFile() {
     if (!file || !boxes || boxes.length === 0) return
     redraw()
   }, [file, boxes])
+
+  return imgRes
 }
 
 export function useSelectBox() {
-  const { boxes, dispatch, canvasRef } = useDashboard()
+  const { boxes, dispatch } = useDashboard()
   const redraw = useRedraw()
   const needsRedraw = useRef(false)
 
@@ -139,10 +149,7 @@ export function useSelectBox() {
    * corner as the origin and where we are clicking as the end, so we can then
    * resize the rectangles.
    */
-  function selectBox(e, autoselect = false) {
-    const { left, top } = canvasRef.current.getBoundingClientRect()
-    const x = e.clientX - left
-    const y = e.clientY - top
+  function selectBox(x, y, autoselect = false) {
     let selected, oppositeCorner
     const padding = cornerSize + 2 / 2
 
