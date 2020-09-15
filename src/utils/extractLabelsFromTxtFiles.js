@@ -6,7 +6,7 @@ export default async function extractLabelsFromTxtFiles(
   txtsContent
 ) {
   const hasBoxes = (b) =>
-    b.match(/^(\d (\d|\.| |\n)*)/g) && b.split('\n')?.[0]?.length > 36
+    b.match(/^(\d* (\d|\.| |\n)*)/g) && b.split('\n')?.[0]?.length > 36
   const boxes = {}
   const boxesNames = {}
   const classes = txtsContent.find((data) => !hasBoxes(data))
@@ -26,16 +26,17 @@ export default async function extractLabelsFromTxtFiles(
 
     if (i === undefined) continue
 
-    const coordinates = txtsContent[i].split('\n')
+    const coordinates = txtsContent[i].split('\n').filter((v) => v)
     const [{ w, h }] = await getImagesResolutions([image])
 
     boxes[imgIndx] = coordinates.map((c) => {
       const [, bx, by, bw, bh] = c.trim().split(' ').map(parseFloat)
+
       return [
-        (bx - bw / 2) * w,
-        (by - bh / 2) * h,
-        (bw - bw / 2) * w,
-        (bh - by / 2) * h,
+        Math.round(bx * w - (bw * w) / 2),
+        Math.round(by * h - (bh * h) / 2),
+        Math.round(bx * w + (bw * w) / 2),
+        Math.round(by * h + (bh * h) / 2),
       ]
     })
 

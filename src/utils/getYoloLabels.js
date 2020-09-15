@@ -23,10 +23,7 @@ function coords(box, { w, h }) {
 
 function txt(boxes, labelsIndx, labels, imgRes) {
   return boxes
-    .map(
-      (box, index) =>
-        `${labelsIndx[labels[index]]} ${coords(box, imgRes, canvasSize)}`
-    )
+    .map((box, index) => `${labelsIndx[labels[index]]} ${coords(box, imgRes)}`)
     .join('\n')
 }
 

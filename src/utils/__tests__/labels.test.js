@@ -45,7 +45,7 @@ describe('labels', () => {
       expect(res.length).toBe(1)
       expect(filename).toBe('test.xml')
       expect(dataurl).toBe(
-        'data:text/xml,<annotation><filename>test.jpg</filename><source><database>Unknown</database></source><size><width>960</width><height>432</height><depth>3</depth></size><segmented>0</segmented><object><name>horse</name><pose>Unspecified</pose><truncated>0</truncated><difficult>0</difficult><bndbox><xmin>249</xmin><ymin>-38</ymin><xmax>323</xmax><ymax>78</ymax></bndbox></object><object><name>horse</name><pose>Unspecified</pose><truncated>0</truncated><difficult>0</difficult><bndbox><xmin>441</xmin><ymin>-99</ymin><xmax>559</xmax><ymax>29</ymax></bndbox></object><object><name>horse</name><pose>Unspecified</pose><truncated>0</truncated><difficult>0</difficult><bndbox><xmin>637</xmin><ymin>-85</ymin><xmax>712</xmax><ymax>58</ymax></bndbox></object><object><name>horse</name><pose>Unspecified</pose><truncated>0</truncated><difficult>0</difficult><bndbox><xmin>790</xmin><ymin>-100</ymin><xmax>904</xmax><ymax>45</ymax></bndbox></object><object><name>human</name><pose>Unspecified</pose><truncated>0</truncated><difficult>0</difficult><bndbox><xmin>416</xmin><ymin>-226</ymin><xmax>353</xmax><ymax>-312</ymax></bndbox></object></annotation>'
+        'data:text/xml,<annotation><filename>test.jpg</filename><source><database>Unknown</database></source><size><width>960</width><height>432</height><depth>3</depth></size><segmented>0</segmented><object><name>horse</name><pose>Unspecified</pose><truncated>0</truncated><difficult>0</difficult><bndbox><xmin>183</xmin><ymin>206</ymin><xmax>237</xmax><ymax>292</ymax></bndbox></object><object><name>horse</name><pose>Unspecified</pose><truncated>0</truncated><difficult>0</difficult><bndbox><xmin>323</xmin><ymin>162</ymin><xmax>410</xmax><ymax>256</ymax></bndbox></object><object><name>horse</name><pose>Unspecified</pose><truncated>0</truncated><difficult>0</difficult><bndbox><xmin>467</xmin><ymin>172</ymin><xmax>522</xmax><ymax>277</ymax></bndbox></object><object><name>horse</name><pose>Unspecified</pose><truncated>0</truncated><difficult>0</difficult><bndbox><xmin>579</xmin><ymin>161</ymin><xmax>662</xmax><ymax>268</ymax></bndbox></object><object><name>human</name><pose>Unspecified</pose><truncated>0</truncated><difficult>0</difficult><bndbox><xmin>305</xmin><ymin>69</ymin><xmax>259</xmax><ymax>6</ymax></bndbox></object></annotation>'
       )
     })
 
@@ -59,7 +59,7 @@ describe('labels', () => {
 
       expect(res[1].filename).toBe('test.txt')
       expect(res[1].dataurl).toBe(
-        'data:text/txt,0 0.297917 0.046296 0.077083 0.268519\n0 0.520833 -0.081019 0.122917 0.296296\n0 0.702604 -0.031250 0.078125 0.331019\n0 0.882292 -0.063657 0.118750 0.335648\n1 0.400521 -0.622685 0.065625 0.199074'
+        'data:text/txt,0 0.218750 0.576389 0.056250 0.199074\n0 0.381771 0.483796 0.090625 0.217593\n0 0.515104 0.519676 0.057292 0.243056\n0 0.646354 0.496528 0.086458 0.247685\n1 0.293750 0.086806 0.047917 0.145833'
       )
     })
   })
@@ -71,11 +71,11 @@ describe('labels', () => {
       const images = [{ name: 'test.jpg' }, { name: 'another.jpg' }]
       expectedBoxes = {
         0: [
-          [255, 536, 336, 679],
-          [467, 483, 545, 621],
-          [645, 494, 724, 653],
-          [789, 465, 888, 624],
-          [428, 352, 354, 265],
+          [253, 296, 334, 438],
+          [464, 243, 542, 381],
+          [641, 254, 720, 412],
+          [784, 225, 883, 384],
+          [352, 26, 425, 113],
         ],
       }
       expectedBoxNames = {
