@@ -1,5 +1,4 @@
 import getImagesResolutions from './getImagesResolutions'
-import fixers from './fixers'
 
 export default async function extractLabelsFromTxtFiles(
   images,
@@ -29,15 +28,14 @@ export default async function extractLabelsFromTxtFiles(
 
     const coordinates = txtsContent[i].split('\n')
     const [{ w, h }] = await getImagesResolutions([image])
-    const { unfixW, unfixH } = fixers({ w, h })
 
     boxes[imgIndx] = coordinates.map((c) => {
       const [, bx, by, bw, bh] = c.trim().split(' ').map(parseFloat)
       return [
-        unfixW((bx - bw / 2) * w),
-        unfixH((by - bh / 2) * h),
-        unfixW((bw - bw / 2) * w),
-        unfixH((bh - by / 2) * h),
+        (bx - bw / 2) * w,
+        (by - bh / 2) * h,
+        (bw - bw / 2) * w,
+        (bh - by / 2) * h,
       ]
     })
 

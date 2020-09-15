@@ -1,5 +1,4 @@
 import getImagesResolutions from './getImagesResolutions'
-import fixers from './fixers'
 
 /**
  * format: <object-class> <x> <y> <width> <height>.
@@ -12,10 +11,7 @@ import fixers from './fixers'
  * - atention: <x> <y> - are center of rectangle (are not top-left corner)
  */
 function coords(box, { w, h }) {
-  const { fixW, fixH } = fixers({ w, h })
-  const [b1, b2, b3, b4] = box.map((b, i) =>
-    i === 0 || i === 2 ? fixW(b) : fixH(b)
-  )
+  const [b1, b2, b3, b4] = box
   const round6 = (n) => (Math.round(n * 1000000) / 1000000).toFixed(6)
   const x = round6((b1 + b3) / 2 / w)
   const y = round6((b2 + b4) / 2 / h)
@@ -27,7 +23,10 @@ function coords(box, { w, h }) {
 
 function txt(boxes, labelsIndx, labels, imgRes) {
   return boxes
-    .map((box, index) => `${labelsIndx[labels[index]]} ${coords(box, imgRes)}`)
+    .map(
+      (box, index) =>
+        `${labelsIndx[labels[index]]} ${coords(box, imgRes, canvasSize)}`
+    )
     .join('\n')
 }
 

@@ -1,9 +1,6 @@
 import getImagesResolutions from './getImagesResolutions'
-import fixers from './fixers'
 
 function xml(boxes, file, boxNames, { w, h }) {
-  const { fixW, fixH } = fixers({ w, h })
-
   return `<annotation>
     <filename>${file.name}</filename>
     <source>
@@ -24,10 +21,10 @@ function xml(boxes, file, boxNames, { w, h }) {
         <truncated>0</truncated>
         <difficult>0</difficult>
         <bndbox>
-          <xmin>${fixW(x)}</xmin>
-          <ymin>${fixH(y)}</ymin>
-          <xmax>${fixW(mx)}</xmax>
-          <ymax>${fixH(my)}</ymax>
+          <xmin>${x}</xmin>
+          <ymin>${y}</ymin>
+          <xmax>${mx}</xmax>
+          <ymax>${my}</ymax>
         </bndbox>
       </object>
     `
