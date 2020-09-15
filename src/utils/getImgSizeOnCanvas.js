@@ -9,10 +9,5 @@ export default function getImgSizeOnCanvas(imgSize, canvasSize, zoom) {
     ? Math.round((canvasSize.width * h) / w)
     : Math.round(canvasSize.height)
 
-  return {
-    originalW,
-    originalH,
-    wZoom: originalW * zoom,
-    hZoom: originalH * zoom,
-  }
+  return [originalW, originalH, originalW * zoom, originalH * zoom]
 }
