@@ -13,7 +13,7 @@ const initialState = {
 
 function reducer(state, action) {
   const boxes = (state.allBoxes[state.fileIndex] || []).slice()
-  const boxNames = { ...state.allBoxesNames[state.fileIndex] || {} }
+  const boxNames = { ...(state.allBoxesNames[state.fileIndex] || {}) }
 
   function updateBoxes(b) {
     return {
@@ -83,7 +83,7 @@ function reducer(state, action) {
         saved: false,
         selectedBox: undefined,
         allBoxes: updateBoxes(boxes.filter((_, i) => i != state.selectedBox)),
-        allBoxesNames: updateBoxNames(boxNames)
+        allBoxesNames: updateBoxNames(boxNames),
       }
     }
     case 'select-box':
@@ -103,12 +103,17 @@ function reducer(state, action) {
       return { ...state, zoom: state.zoom + action.data }
     case 'set-size':
       return { ...state, size: action.data }
-    case 'load':
+    case 'load': {
+      const { images, allBoxes, allBoxesNames } = action.data
+
       return {
         ...state,
-        files: [...state.files, ...action.data],
-        fileIndex: state.files.length,
+        files: [...state.files, ...images],
+        fileIndex: images.length ? state.files.length : state.fileIndex,
+        allBoxes: { ...state.allBoxes, ...allBoxes },
+        allBoxesNames: { ...state.allBoxesNames, ...allBoxesNames },
       }
+    }
     case 'next':
       return {
         ...state,

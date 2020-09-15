@@ -23,11 +23,7 @@ export default function Center() {
   const selectBox = useSelectBox()
   const imgRes = useLoadImage()
   const zoom = Math.pow(1.1, state.zoom)
-  const [originalW, originalH, wZoom, hZoom] = getImgSizeOnCanvas(
-    imgRes,
-    state.size,
-    zoom
-  )
+  const [originalW, originalH, wZoom, hZoom] = getImgSizeOnCanvas(imgRes, zoom)
 
   useKeyDownControls()
 
@@ -36,12 +32,12 @@ export default function Center() {
     const x = Math.round(
       (((e.clientX - left - (state.size.width / 2 - wZoom / 2)) / zoom) *
         imgRes.w) /
-      originalW
+        originalW
     )
     const y = Math.round(
       (((e.clientY - top - (state.size.height / 2 - hZoom / 2)) / zoom) *
         imgRes.h) /
-      originalH
+        originalH
     )
     return [x, y]
   }
@@ -88,7 +84,7 @@ export default function Center() {
         const nesw = (top && !left) || (!top && left)
         canvasRef.current.style = `cursor: ${
           nesw ? 'nesw-resize' : 'nwse-resize'
-          };`
+        };`
       } else if (selected > -1) {
         canvasRef.current.style = 'cursor: move;'
       } else {

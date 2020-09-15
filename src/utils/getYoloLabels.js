@@ -21,12 +21,9 @@ function coords(box, { w, h }) {
   return `${x} ${y} ${width} ${height}`
 }
 
-function txt(boxes, labelsIndx, labels, imgRes, canvasSize) {
+function txt(boxes, labelsIndx, labels, imgRes) {
   return boxes
-    .map(
-      (box, index) =>
-        `${labelsIndx[labels[index]]} ${coords(box, imgRes, canvasSize)}`
-    )
+    .map((box, index) => `${labelsIndx[labels[index]]} ${coords(box, imgRes)}`)
     .join('\n')
 }
 

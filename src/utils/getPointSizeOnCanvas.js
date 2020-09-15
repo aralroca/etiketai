@@ -1,7 +1,9 @@
+import getCanvasSize from './getCanvasSize'
 import getImgSizeOnCanvas from './getImgSizeOnCanvas'
 
-export default function getPointSizeOnCanvas(x, y, imgSize, canvasSize) {
-  const [originalW, originalH] = getImgSizeOnCanvas(imgSize, canvasSize)
+export default function getPointSizeOnCanvas(x, y, imgSize) {
+  const canvasSize = getCanvasSize()
+  const [originalW, originalH] = getImgSizeOnCanvas(imgSize)
 
   return [
     Math.round(

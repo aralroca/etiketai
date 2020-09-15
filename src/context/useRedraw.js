@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
+import getCanvasSize from '../utils/getCanvasSize'
 import getPointSizeOnCanvas from '../utils/getPointSizeOnCanvas'
 import useZoom from './useZoom'
 import { useDashboard } from '.'
@@ -67,8 +68,8 @@ export default function useRedraw() {
     // Boxes
     boxes.forEach(([startX, startY, mouseX, mouseY], index) => {
       const imgSize = { w: img.width, h: img.height }
-      const [x, y] = getPointSizeOnCanvas(startX, startY, imgSize, state.size)
-      const [mx, my] = getPointSizeOnCanvas(mouseX, mouseY, imgSize, state.size)
+      const [x, y] = getPointSizeOnCanvas(startX, startY, imgSize)
+      const [mx, my] = getPointSizeOnCanvas(mouseX, mouseY, imgSize)
 
       const color = index === state.selectedBox ? '#64b5f6' : '#aed581'
       ctx.beginPath()
@@ -104,10 +105,7 @@ export function useLoadImage() {
       onZoom(-state.zoom)
       dispatch({
         type: 'set-size',
-        data: {
-          width: window.innerWidth - 420,
-          height: window.innerHeight,
-        },
+        data: getCanvasSize(),
       })
       requestAnimationFrame(redraw)
     }
