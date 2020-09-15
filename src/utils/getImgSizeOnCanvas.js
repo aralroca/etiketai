@@ -1,7 +1,8 @@
 import getCanvasSize from './getCanvasSize'
 
-export default function getImgSizeOnCanvas(imgSize, zoom) {
+export default function getImgSizeOnCanvas(imgSize, zoom = 1) {
   const canvasSize = getCanvasSize()
+
   const { w, h } = imgSize || {}
   const horizontal = w > h
   let originalW = horizontal
