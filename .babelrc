@@ -1,16 +1,31 @@
 {
-  "env":{
+  "env": {
     "development": {
       "presets": ["next/babel"]
     },
     "production": {
-      "presets": ["next/babel", "minify"]
+      "presets": [
+        "next/babel",
+        [
+          "minify",
+          {
+            "builtIns": false
+          }
+        ]
+      ]
     },
     "test": {
-      "plugins": [
-        ["transform-es2015-modules-commonjs"]
-      ],
-      "presets": [["next/babel", { "preset-env": { "modules": "commonjs" } }]]
+      "plugins": [["transform-es2015-modules-commonjs"]],
+      "presets": [
+        [
+          "next/babel",
+          {
+            "preset-env": {
+              "modules": "commonjs"
+            }
+          }
+        ]
+      ]
     }
   },
   "ignore": ["node_modules"],
