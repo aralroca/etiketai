@@ -6,20 +6,12 @@ import { useDashboard } from '../../context'
 import styles from './styles.module.css'
 
 export default function Right() {
-  const redraw = useRedraw()
   const { state, boxes, boxNames, dispatch } = useDashboard()
-  const needsRedraw = useRef(false)
   const { selectedBox } = state
   const file = state.files?.[state.fileIndex] || {}
   const labels = [
     ...new Set(Object.values(state.allBoxesNames).flatMap(Object.values)),
   ]
-
-  useEffect(() => {
-    if (!needsRedraw.current) return
-    needsRedraw.current = false
-    redraw()
-  })
 
   return (
     <div className={styles.right}>
@@ -44,7 +36,6 @@ export default function Right() {
                   onClick={() => {
                     if (isActive) return
                     dispatch({ type: 'select-box', data: realIndex })
-                    needsRedraw.current = true
                   }}
                   placeholder="No label yet"
                   defaultValue={boxNames[realIndex + ''] || ''}
