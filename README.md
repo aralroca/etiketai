@@ -1,6 +1,10 @@
 # Labelai
 
 <p align="center">
+  <img src="public/labelai-logo.png" alt="labelai logo">
+</p>
+
+<p align="center">
     <a href="https://github.com/aralroca/labelai/actions?query=workflow%3ATests" alt="Tests status">
         <img src="https://github.com/aralroca/labelai/workflows/Tests/badge.svg" /></a>
     <a href="https://github.com/aralroca/labelai/graphs/contributors" alt="Contributors">
