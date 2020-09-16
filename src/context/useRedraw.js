@@ -136,7 +136,7 @@ export function useLoadImage() {
 }
 
 export function useSelectBox() {
-  const { boxes, dispatch } = useDashboard()
+  const { state, canvasRef, boxes, dispatch } = useDashboard()
   const redraw = useRedraw()
   const needsRedraw = useRef(false)
 
@@ -193,18 +193,17 @@ export function useSelectBox() {
     }
 
     if (autoselect && selected !== undefined) {
-      needsRedraw.current = true
       dispatch({ type: 'select-box', data: selected })
     }
 
     return { selected, oppositeCorner }
   }
 
+  // Redraw on select a box
   useEffect(() => {
-    if (!needsRedraw.current) return
+    if (!canvasRef.current) return
     redraw()
-    needsRedraw.current = false
-  })
+  }, [state.selectedBox, canvasRef.current])
 
   return selectBox
 }
