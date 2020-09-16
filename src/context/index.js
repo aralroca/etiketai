@@ -23,10 +23,7 @@ function reducer(state, action) {
   }
 
   function updateBoxNames(names) {
-    return {
-      ...state.allBoxesNames,
-      [state.fileIndex]: names,
-    }
+    return { ...state.allBoxesNames, [state.fileIndex]: names }
   }
 
   switch (action.type) {
@@ -53,6 +50,10 @@ function reducer(state, action) {
         selectedBox: boxes.length,
         saved: false,
         allBoxes: updateBoxes([...boxes, boxes[state.selectedBox]]),
+        allBoxesNames: updateBoxNames({
+          ...boxNames,
+          [boxes.length]: boxNames[state.selectedBox],
+        }),
       }
     case 'move-box': {
       const [osx, osy, omx, omy] = boxes[state.selectedBox]
