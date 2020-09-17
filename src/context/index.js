@@ -98,8 +98,6 @@ function reducer(state, action) {
           [state.selectedBox + '']: action.data,
         }),
       }
-    case 'reset-zoom':
-      return { ...state, zoom: initialState.zoom }
     case 'set-zoom':
       return { ...state, zoom: state.zoom + action.data }
     case 'set-size':

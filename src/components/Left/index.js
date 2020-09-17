@@ -2,24 +2,17 @@ import { useEffect } from 'react'
 
 import Modal from '../Modal'
 import download from '../../utils/download'
-import extractFilesLabels from '../../utils/extractFilesLabels'
 import getPascalVocLabels from '../../utils/getPascalVocLabels'
 import getYoloLabels from '../../utils/getYoloLabels'
-import useZoom from '../../context/useZoom'
+import useMenu from '../../context/useMenu'
 import { useDashboard } from '../../context'
 
 import styles from './styles.module.css'
 
-const DELTA = 2
-
 export default function Left() {
-  const { state, dispatch } = useDashboard()
-  const onZoom = useZoom()
-  const hasFiles = state.files.length > 0
-  const hasSelectedBox = state.selectedBox > -1
-  const isFirst = state.fileIndex === 0
-  const isLast = state.fileIndex === state.files.length - 1
+  const { state } = useDashboard()
   const hasBoxes = Object.values(state.allBoxes).flat().length > 0
+  const menu = useMenu().map(getItem)
 
   useEffect(() => {
     if (state.saved || !hasBoxes) return
@@ -35,72 +28,9 @@ export default function Left() {
     return () => window.removeEventListener('beforeunload', unload)
   }, [state.saved, hasBoxes])
 
-  const globalList = [
-    {
-      label: 'Open',
-      icon: '📂',
-      type: 'input[file]',
-      action: async (e) =>
-        e.target.files.length > 0 &&
-        dispatch({
-          type: 'load',
-          data: await extractFilesLabels(
-            [...e.target.files],
-            state.files.length
-          ),
-        }),
-    },
-    {
-      label: 'Next',
-      icon: '⇨',
-      action: () => dispatch({ type: 'next' }),
-      disabled: !hasFiles || isLast,
-    },
-    {
-      label: 'Prev',
-      icon: '⇦',
-      action: () => dispatch({ type: 'prev' }),
-      disabled: !hasFiles || isFirst,
-    },
-    {
-      label: 'Save',
-      icon: '💾',
-      disabled: !hasFiles || !hasBoxes,
-      action: () => dispatch({ type: 'toggle-save-modal' }),
-    },
-  ].map(getItem)
-
-  const imageMenuList = [
-    {
-      label: 'Duplicate RectBox',
-      icon: '📑',
-      disabled: !hasFiles || !hasSelectedBox,
-      action: () => dispatch({ type: 'duplicate-box' }),
-    },
-    {
-      label: 'Delete RectBox',
-      icon: '❌',
-      disabled: !hasFiles || !hasSelectedBox,
-      action: () => dispatch({ type: 'remove-box' }),
-    },
-    {
-      label: 'Zoom in',
-      icon: '🔍',
-      disabled: !hasFiles,
-      action: () => onZoom(DELTA),
-    },
-    {
-      label: 'Zoom out',
-      icon: '🔍',
-      disabled: !hasFiles,
-      action: () => onZoom(-DELTA),
-    },
-  ].map(getItem)
-
   return (
     <>
-      {globalList}
-      {imageMenuList}
+      {menu}
       <ZoomPercentage />
       <SaveModal />
     </>
