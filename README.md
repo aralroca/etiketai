@@ -1,8 +1,10 @@
 # Labelai
 
 <p align="center">
-  <img src="public/labelai-logo.png" alt="labelai logo">
-  <h2 align="center"><a href="https://labelai.vercel.app/">labelai.vercel.app</a></h2>
+  <a href="https://labelai.vercel.app/">
+    <img src="public/labelai-logo.png" alt="labelai logo">
+    <h2 align="center">labelai.vercel.app</h2>
+  </a>
 </p>
 
 <p align="center">
