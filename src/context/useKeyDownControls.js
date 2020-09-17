@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react'
-import { useDashboard } from '.'
-import useRedraw from './useRedraw'
+import { useEffect } from 'react'
 
-const keys = new Set(['Backspace', 'd', 'ArrowRight', 'ArrowLeft'])
+import useMenu from './useMenu'
+import useZoom from './useZoom'
+import { useDashboard } from '.'
 
 function isRenamingLabel() {
   return (
@@ -12,45 +12,36 @@ function isRenamingLabel() {
 }
 
 export default function useKeyDownControls() {
-  const { state, boxes, dispatch } = useDashboard()
-  const redraw = useRedraw()
-  const needsRedraw = useRef(false)
+  const { state } = useDashboard()
+  const menu = useMenu()
   const modalOpen = state.isSaveModalOpen
+  const onZoom = useZoom()
 
   useEffect(() => {
     function onKeyDown(e) {
-      if (!keys.has(e.key) || modalOpen) return
+      if (modalOpen || isRenamingLabel()) return
 
-      if (e.key === 'ArrowRight' && !isRenamingLabel()) {
-        dispatch({ type: 'next' })
+      if (e.key === '0') {
+        onZoom(-state.zoom)
         return
       }
 
-      if (e.key === 'ArrowLeft' && !isRenamingLabel()) {
-        dispatch({ type: 'prev' })
-        return
-      }
+      for (let m of menu) {
+        if (m.disabled || !m.hotkey || !m.hotkey(e)) continue
 
-      if (e.key === 'd') {
-        if (!e.metaKey && !e.ctrlKey) return
-
-        // Duplicate box
         e.preventDefault()
-        dispatch({ type: 'duplicate-box' })
+
+        if (m.type === 'input[file]') {
+          document.querySelector('input[type=file]').click()
+          return
+        }
+
+        m.action()
         return
       }
-
-      if (isRenamingLabel()) return
-      needsRedraw.current = true
-      dispatch({ type: 'remove-box' })
     }
 
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [state, modalOpen])
-
-  useEffect(() => {
-    if (needsRedraw.current) redraw()
-    needsRedraw.current = false
-  }, [boxes.length])
+  }, [state, modalOpen, menu])
 }

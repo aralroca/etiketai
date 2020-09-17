@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import packageJSON from '../../../package.json'
 
 import getImgSizeOnCanvas from '../../utils/getImgSizeOnCanvas'
 import useKeyDownControls from '../../context/useKeyDownControls'
@@ -32,12 +33,12 @@ export default function Center() {
     const x = Math.round(
       (((e.clientX - left - (state.size.width / 2 - wZoom / 2)) / zoom) *
         imgRes.w) /
-        originalW
+      originalW
     )
     const y = Math.round(
       (((e.clientY - top - (state.size.height / 2 - hZoom / 2)) / zoom) *
         imgRes.h) /
-        originalH
+      originalH
     )
     return [x, y]
   }
@@ -84,7 +85,7 @@ export default function Center() {
         const nesw = (top && !left) || (!top && left)
         canvasRef.current.style = `cursor: ${
           nesw ? 'nesw-resize' : 'nwse-resize'
-        };`
+          };`
       } else if (selected > -1) {
         canvasRef.current.style = 'cursor: move;'
       } else {
@@ -123,7 +124,15 @@ export default function Center() {
     resizing = undefined
   }
 
-  if (!file) return null
+  if (!file) return (
+    <div className={styles.startPoint}>
+      <h1>Labelai</h1>
+      <img width="100" src="/labelai-logo.svg" alt="Labelai logo" />
+      <p>v.{packageJSON.version}</p>
+      <h2>Click "Open" to start</h2>
+      <p>More info <a rel="noopener noreferrer" href="https://github.com/aralroca/labelai/blob/master/README.md" target="_blank">on GitHub README</a></p>
+    </div>
+  )
 
   return (
     <div className={styles.canvasWrapper}>
