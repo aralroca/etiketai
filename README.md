@@ -2,6 +2,7 @@
 
 <p align="center">
   <img src="public/labelai-logo.png" alt="labelai logo">
+  <h2 align="center"><a href="https://labelai.vercel.app/">labelai.vercel.app</a></h2>
 </p>
 
 <p align="center">
@@ -33,6 +34,8 @@ It's totally client-side, there is no request to any server. It is implemented w
 Annotations are saved as XML files in **PASCAL VOC** format, the format used by ImageNet. Besides, it also supports **YOLO** format.
 
 It's strongly inspired by [**labelImg**](https://github.com/tzutalin/labelImg).
+
+<img src="public/demo.gif" alt="demo" />
 
 ## Why the need of this project?
 
