@@ -41,10 +41,7 @@ export default function App({ Component, pageProps }) {
         <meta name="description" content={description} />
         <meta property="og:description" content={description} />
         <meta property="og:url" content={url} />
-        <meta
-          property="og:image"
-          content={`${url}/android-chrome-512x512.png`}
-        />
+        <meta property="og:image" content={`${url}/ogimage.png`} />
         <meta property="og:title" content={title} />
       </Head>
       <Component {...pageProps} />
