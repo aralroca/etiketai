@@ -3,6 +3,7 @@ import Head from 'next/head'
 import '../global-style.css'
 
 export default function App({ Component, pageProps }) {
+  const url = 'https://labelai.vercel.app/'
   const title = 'Labelai'
   const description =
     'Labelai is an online tool designed to label images, useful for training AI models.'
@@ -39,7 +40,11 @@ export default function App({ Component, pageProps }) {
         />
         <meta name="description" content={description} />
         <meta property="og:description" content={description} />
-        <meta property="og:image" content="/android-chrome-512x512.png" />
+        <meta property="og:url" content={url} />
+        <meta
+          property="og:image"
+          content={`${url}/android-chrome-512x512.png`}
+        />
         <meta property="og:title" content={title} />
       </Head>
       <Component {...pageProps} />
