@@ -43,7 +43,8 @@ It's strongly inspired by [**labelImg**](https://github.com/tzutalin/labelImg).
 
 Although we think that [labelImg](https://github.com/tzutalin/labelImg) is a good alternative, there are certain root problems that we are trying to solve with this project:
 
-- **No instalation required**. This way it is a tool that can be used from any device without any dependency.
+- **Available in all devices**. Being a web application makes it accessible from any device. Even tablets, mobiles.
+- **No instalation required**. It speeds up the start, as it does not require installation and has no dependency on your operating system. Only the browser.
 - **Automatic updates**. You will always have the latest version available.
 - **Security**: no file on your system is directly manipulated. So there is the security layer of your browser to import/save files.
 - **Beginner friendly**. We want it to be a more beginner-friendly process without losing flexibility. To start, you only need to open a browser with any device.

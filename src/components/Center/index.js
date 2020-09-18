@@ -29,14 +29,15 @@ export default function Center() {
   useKeyDownControls()
 
   function getXY(e) {
+    const { clientX, clientY } = e.touches?.[0] || e
     const { left, top } = canvasRef.current.getBoundingClientRect()
     const x = Math.round(
-      (((e.clientX - left - (state.size.width / 2 - wZoom / 2)) / zoom) *
+      (((clientX - left - (state.size.width / 2 - wZoom / 2)) / zoom) *
         imgRes.w) /
       originalW
     )
     const y = Math.round(
-      (((e.clientY - top - (state.size.height / 2 - hZoom / 2)) / zoom) *
+      (((clientY - top - (state.size.height / 2 - hZoom / 2)) / zoom) *
         imgRes.h) /
       originalH
     )
@@ -141,8 +142,11 @@ export default function Center() {
         height={state.size.height}
         ref={canvasRef}
         onMouseDown={onMouseDown}
+        onTouchStart={onMouseDown}
         onMouseMove={onMouseMove}
+        onTouchMove={onMouseMove}
         onMouseOut={stopDragging}
+        onTouchEnd={stopDragging}
         onMouseUp={stopDragging}
         onMouseWheel={onMouseWheel}
       />
