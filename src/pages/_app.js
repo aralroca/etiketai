@@ -39,7 +39,7 @@ export default function App({ Component, pageProps }) {
         />
         <meta name="description" content={description} />
         <meta property="og:description" content={description} />
-        <meta property="og:image" content="/labelai-logo.svg" />
+        <meta property="og:image" content="/android-chrome-512x512.png" />
         <meta property="og:title" content={title} />
       </Head>
       <Component {...pageProps} />
