@@ -43,28 +43,30 @@ It's strongly inspired by [**labelImg**](https://github.com/tzutalin/labelImg).
 
 Although we think that [labelImg](https://github.com/tzutalin/labelImg) is a good alternative, there are certain root problems that we are trying to solve with this project:
 
-- **Available in all devices**. Being a web application makes it accessible from any device. Even tablets, mobiles.
-- **No instalation required**. It speeds up the start, as it does not require installation and has no dependency on your operating system. Only the browser.
+- **Available in all devices**. Being a web application makes it accessible from any device, even tablets and mobiles.
+- **No instalation required**. It speeds up the start, as it does not require installation and has no dependencies on your operating system. Only the browser.
 - **Automatic updates**. You will always have the latest version available.
-- **Security**: no file on your system is directly manipulated. So there is the security layer of your browser to import/save files.
-- **Beginner friendly**. We want it to be a more beginner-friendly process without losing flexibility. To start, you only need to open a browser with any device.
+- **Security**. No file on your system is directly manipulated. Files are imported/saved using the security layer of your browser.
+- **Beginner-friendly**. We want it to be an easy-to-use process without losing flexibility. To start, you only need to open a browser with any device.
+
+_I wrote a short article in my blog explaining a little more in detail why: https://aralroca.com/blog/labelai_
 
 ## In future releases
 
 - Improve tablet / mobile experience.
-- Possibility to train directly your labeled images with the same app. And save the generated model.
+- Possibility to train directly your labeled images with the same app and also to save the generated model.
 - Offline support.
 
 ## Getting started
 
-Labelai **not requires any installation** 😜. In order to start:
+Labelai **doesn't require any installation** 😜. In order to start:
 
 - **Open the web app** https://labelai.vercel.app/
 - **Click 'Open'**. Here you can import 3 file types: Images (.png, .jpg, .gif, .svg...), XML (PascalVOC labels) and TXT (YOLO labels). Surely the first time you are only interested in importing images, since you will not have any label saved yet. **Important**: _if you want to import already saved labels, you must import it together with the images at the same time. In the case of YOLO, you also must import the `classes.txt` file._
-- **Click and release** left mouse to select a region to annotate the rect box. Then, you can put a name to that label or select one of the already used names.
-- **Update rect boxes**. Once you already labeled a part of the image, you can resize it clicking on a box corner, move the box using drag & drop, duplicate it (<kbd>Ctrl</kbd> + <kbd>d</kbd>) or even remove it (<kbd>⌫ Delete</kbd>).
-- **Move through images**. Once you finish annotating all the labels of an image, you can press to the `Next` and `Prev` button to move through images and start anottating another image. You also can use the arrows <kbd>→</kbd> and <kbd>←</kbd>.
-- **Save your changes**. You can save the labels of the current file or the all files. At this point, you can decide in which format you want to save them (**XML** for ImageNet or **TXT** for YOLO). In the case of YOLO, a file named `classes.txt` is saved too and it defines the list of class names that your YOLO label refers to.
+- **Click and release** left mouse to select a region to annotate the rect box. Then, you can name that label or select one of the already used names.
+- **Update rect boxes**. Once you already labeled a part of the image, you can resize it by clicking on a box corner, move the box using drag & drop, duplicate it (<kbd>Ctrl</kbd> + <kbd>d</kbd>) or even remove it (<kbd>⌫ Delete</kbd>).
+- **Move through images**. Once you finish annotating all the labels of an image, you can press to the `Next` and `Prev` button to move through images and start anottating another image. You can also use the arrows <kbd>→</kbd> and <kbd>←</kbd>.
+- **Save your changes**. You can save the labels of the current file or the labels of all files. At this point, you can decide in which format you want to save them (**XML** for ImageNet or **TXT** for YOLO). In the case of YOLO, a file named `classes.txt` is saved too and it defines the list of class names that your YOLO label refers to.
 
 ## Hotkeys
 
@@ -105,6 +107,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
