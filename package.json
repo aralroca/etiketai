@@ -13,7 +13,7 @@
     "test:watch": "NODE_ENV=test jest --watch"
   },
   "dependencies": {
-    "next": "9.5.3",
+    "next": "9.5.4",
     "preact": "10.4.8",
     "preact-render-to-string": "5.1.10",
     "react": "github:preact-compat/react#1.0.0",
