@@ -1,25 +1,25 @@
-# Labelai
+# Etiketai
 
 <p align="center">
-  <a href="https://labelai.vercel.app/">
-    <img src="public/labelai-logo.png" alt="labelai logo">
-    <h2 align="center">labelai.vercel.app</h2>
+  <a href="https://etiketai.vercel.app/">
+    <img src="public/etiketai-logo.png" alt="etiketai logo">
+    <h2 align="center">etiketai.vercel.app</h2>
   </a>
 </p>
 
 <p align="center">
-    <a href="https://github.com/aralroca/labelai/actions?query=workflow%3ATests" alt="Tests status">
-        <img src="https://github.com/aralroca/labelai/workflows/Tests/badge.svg" /></a>
-    <a href="https://github.com/aralroca/labelai/graphs/contributors" alt="Contributors">
-        <img src="https://img.shields.io/github/contributors/aralroca/labelai" /></a>
-    <a href="https://github.com/aralroca/labelai/pulse" alt="Activity">
-        <img src="https://img.shields.io/github/commit-activity/m/aralroca/labelai" /></a>
+    <a href="https://github.com/aralroca/etiketai/actions?query=workflow%3ATests" alt="Tests status">
+        <img src="https://github.com/aralroca/etiketai/workflows/Tests/badge.svg" /></a>
+    <a href="https://github.com/aralroca/etiketai/graphs/contributors" alt="Contributors">
+        <img src="https://img.shields.io/github/contributors/aralroca/etiketai" /></a>
+    <a href="https://github.com/aralroca/etiketai/pulse" alt="Activity">
+        <img src="https://img.shields.io/github/commit-activity/m/aralroca/etiketai" /></a>
     <a href="https://twitter.com/intent/follow?screen_name=shields_io">
         <img src="https://img.shields.io/twitter/follow/aralroca?style=social&logo=twitter"
             alt="follow on Twitter"></a>
 </p>
 
-- [About Labelai](#about-labelai)
+- [About Etiketai](#about-etiketai)
 - [Why the need of this project?](#why-the-need-of-this-project)
 - [In future releases](#in-future-releases)
 - [Getting started](#getting-started)
@@ -27,9 +27,9 @@
 - [Contribute](#contribute)
 - [License](#license)
 
-## About Labelai
+## About Etiketai
 
-Labelai is an online tool designed to label images, useful for training AI models.
+Etiketai is an online tool designed to label images, useful for training AI models.
 
 It's totally client-side, there is no request to any server. It is implemented with Next.js + Preact.
 
@@ -59,9 +59,9 @@ _I wrote a short article in my blog explaining a little more in detail why: http
 
 ## Getting started
 
-Labelai **doesn't require any installation** 😜. In order to start:
+Etiketai **doesn't require any installation** 😜. In order to start:
 
-- **Open the web app** https://labelai.vercel.app/
+- **Open the web app** https://etiketai.vercel.app/
 - **Click 'Open'**. Here you can import 3 file types: Images (.png, .jpg, .gif, .svg...), XML (PascalVOC labels) and TXT (YOLO labels). Surely the first time you are only interested in importing images, since you will not have any label saved yet. **Important**: _if you want to import already saved labels, you must import it together with the images at the same time. In the case of YOLO, you also must import the `classes.txt` file._
 - **Click and release** left mouse to select a region to annotate the rect box. Then, you can name that label or select one of the already used names.
 - **Update rect boxes**. Once you already labeled a part of the image, you can resize it by clicking on a box corner, move the box using drag & drop, duplicate it (<kbd>Ctrl</kbd> + <kbd>d</kbd>) or even remove it (<kbd>⌫ Delete</kbd>).
@@ -101,7 +101,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://aralroca.com"><img src="https://avatars3.githubusercontent.com/u/13313058?v=4" width="100px;" alt=""/><br /><sub><b>Aral Roca Gomez</b></sub></a><br /><a href="#infra-aralroca" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-aralroca" title="Maintenance">🚧</a> <a href="https://github.com/aralroca/labelai/commits?author=aralroca" title="Code">💻</a></td>
+    <td align="center"><a href="https://aralroca.com"><img src="https://avatars3.githubusercontent.com/u/13313058?v=4" width="100px;" alt=""/><br /><sub><b>Aral Roca Gomez</b></sub></a><br /><a href="#infra-aralroca" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-aralroca" title="Maintenance">🚧</a> <a href="https://github.com/aralroca/etiketai/commits?author=aralroca" title="Code">💻</a></td>
   </tr>
 </table>
 
