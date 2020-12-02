@@ -3,10 +3,10 @@ import Head from 'next/head'
 import '../global-style.css'
 
 export default function App({ Component, pageProps }) {
-  const url = 'https://labelai.vercel.app/'
-  const title = 'Labelai'
+  const url = 'https://etiketai.vercel.app/'
+  const title = 'Etiketai'
   const description =
-    'Labelai is an online tool designed to label images, useful for training AI models.'
+    'Etiketai is an online tool designed to label images, useful for training AI models.'
 
   return (
     <>

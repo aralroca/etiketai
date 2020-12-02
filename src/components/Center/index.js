@@ -84,8 +84,7 @@ export default function Center() {
         const left = Math.max(w, w1, w2) === w
         const top = Math.max(h, h1, h2) === h
         const nesw = (top && !left) || (!top && left)
-        canvasRef.current.style = `cursor: ${
-          nesw ? 'nesw-resize' : 'nwse-resize'
+        canvasRef.current.style = `cursor: ${nesw ? 'nesw-resize' : 'nwse-resize'
           };`
       } else if (selected > -1) {
         canvasRef.current.style = 'cursor: move;'
@@ -127,11 +126,11 @@ export default function Center() {
 
   if (!file) return (
     <div className={styles.startPoint}>
-      <h1>Labelai</h1>
-      <img width="100" src="/labelai-logo.svg" alt="Labelai logo" />
+      <h1>Etiketai</h1>
+      <img width="100" src="/etiketai-logo.svg" alt="Etiketai logo" />
       <p>v.{packageJSON.version}</p>
       <h2>Click "Open" to start</h2>
-      <p>More info <a rel="noopener noreferrer" href="https://github.com/aralroca/labelai/blob/master/README.md" target="_blank">on GitHub README</a></p>
+      <p>More info <a rel="noopener noreferrer" href="https://github.com/aralroca/etiketai/blob/master/README.md" target="_blank">on GitHub README</a></p>
     </div>
   )
 
