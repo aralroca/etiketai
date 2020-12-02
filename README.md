@@ -49,7 +49,7 @@ Although we think that [labelImg](https://github.com/tzutalin/labelImg) is a goo
 - **Security**. No file on your system is directly manipulated. Files are imported/saved using the security layer of your browser.
 - **Beginner-friendly**. We want it to be an easy-to-use process without losing flexibility. To start, you only need to open a browser with any device.
 
-_I wrote a short article in my blog explaining a little more in detail why: https://aralroca.com/blog/labelai_
+_I wrote a short article in my blog explaining a little more in detail why: https://aralroca.com/blog/etiketai_
 
 ## In future releases
 
